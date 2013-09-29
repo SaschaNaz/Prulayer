@@ -2,15 +2,10 @@
 ///<reference path="winrt.d.ts" />
 ///<reference path="SamiTS/SamiTS/samiconverter.ts" />
 "use strict";
-var subtypechecks;
-
 var track;
 var style;
 var isPreviewAreaShown = false;
 var subtitleFileDisplayName;
-document.addEventListener("DOMContentLoaded", function () {
-    subtypechecks = document.getElementsByName("subtype");
-});
 
 var SubType;
 (function (SubType) {
@@ -60,17 +55,12 @@ else if (!subfile && getFileExtension(file) === "smi")
             showPreviewArea();
     };
 
-    switch (getTargetSubType()) {
-        case SubType.WebVTT:
-            return SamiTS.convertToWebVTTFromFile(subfile, resultOutput, function (resultStyle) {
-                if (style)
-                    document.head.removeChild(style);
-                style = resultStyle;
-                document.head.appendChild(resultStyle);
-            });
-        case SubType.SRT:
-            return SamiTS.convertToSubRipFromFile(subfile, resultOutput, getTagUse());
-    }
+    return SamiTS.convertToWebVTTFromFile(subfile, resultOutput, function (resultStyle) {
+        if (style)
+            document.head.removeChild(style);
+        style = resultStyle;
+        document.head.appendChild(resultStyle);
+    });
     //SamiTS.convertFromFile(subfile, getTargetSubType(), getTagUse(), (result: string) => {
     //    hidePreviewArea();
     //    hidePlayer();
@@ -130,8 +120,8 @@ function hidePlayer() {
     player.style.display = "none";
 }
 
-function getExtensionForSubType() {
-    switch (getTargetSubType()) {
+function getExtensionForSubType(subtype) {
+    switch (subtype) {
         case SubType.WebVTT:
             return ".vtt";
         case SubType.SRT:
@@ -139,24 +129,13 @@ function getExtensionForSubType() {
     }
 }
 
-function getMIMETypeForSubType() {
-    switch (getTargetSubType()) {
+function getMIMETypeForSubType(subtype) {
+    switch (subtype) {
         case SubType.WebVTT:
             return "text/vtt";
         case SubType.SRT:
             return "text/plain";
     }
-}
-
-function getTargetSubType() {
-    if ((subtypechecks[0]).checked)
-        return SubType.WebVTT;
-else if ((subtypechecks[1]).checked)
-        return SubType.SRT;
-}
-
-function getTagUse() {
-    return taguse.checked;
 }
 
 function getFileExtension(file) {

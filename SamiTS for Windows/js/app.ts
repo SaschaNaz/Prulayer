@@ -3,8 +3,6 @@
 ///<reference path="SamiTS/SamiTS/samiconverter.ts" />
 "use strict";
 
-var subtypechecks: NodeList;
-declare var taguse: HTMLInputElement;
 declare var areaselector: HTMLButtonElement;
 declare var previewarea: HTMLDivElement;
 declare var player: HTMLVideoElement;
@@ -13,9 +11,6 @@ var track: HTMLTrackElement;
 var style: HTMLStyleElement;
 var isPreviewAreaShown = false;
 var subtitleFileDisplayName: string;
-document.addEventListener("DOMContentLoaded", () => {
-    subtypechecks = document.getElementsByName("subtype");
-});
 
 enum SubType {
     WebVTT, SRT
@@ -63,18 +58,13 @@ function load(evt: Event) {
             showPreviewArea();
     };
 
-    switch (getTargetSubType()) {
-        case SubType.WebVTT:
-            return SamiTS.convertToWebVTTFromFile(subfile, resultOutput,
-                (resultStyle: HTMLStyleElement) => {
-                    if (style)
-                        document.head.removeChild(style);
-                    style = resultStyle;
-                    document.head.appendChild(resultStyle);
-                });
-        case SubType.SRT:
-            return SamiTS.convertToSubRipFromFile(subfile, resultOutput, getTagUse());
-    }
+    return SamiTS.convertToWebVTTFromFile(subfile, resultOutput,
+        (resultStyle: HTMLStyleElement) => {
+            if (style)
+                document.head.removeChild(style);
+            style = resultStyle;
+            document.head.appendChild(resultStyle);
+        });
 
     //SamiTS.convertFromFile(subfile, getTargetSubType(), getTagUse(), (result: string) => {
     //    hidePreviewArea();
@@ -136,8 +126,8 @@ function hidePlayer() {
     player.style.display = "none";
 }
 
-function getExtensionForSubType() {
-    switch (getTargetSubType()) {
+function getExtensionForSubType(subtype: SubType) {
+    switch (subtype) {
         case SubType.WebVTT:
             return ".vtt";
         case SubType.SRT:
@@ -145,24 +135,13 @@ function getExtensionForSubType() {
     }
 }
 
-function getMIMETypeForSubType() {
-    switch (getTargetSubType()) {
+function getMIMETypeForSubType(subtype: SubType) {
+    switch (subtype) {
         case SubType.WebVTT:
             return "text/vtt";
         case SubType.SRT:
             return "text/plain";
     }
-}
-
-function getTargetSubType() {
-    if ((<HTMLInputElement>subtypechecks[0]).checked)
-        return SubType.WebVTT;
-    else if ((<HTMLInputElement>subtypechecks[1]).checked)
-        return SubType.SRT;
-}
-
-function getTagUse() {
-    return taguse.checked;
 }
 
 function getFileExtension(file: File) {
