@@ -69,7 +69,7 @@ function load(evt: Event) {
         if (videofile && subfile)
             break;
     }
-    if (!subfile)
+    if (!videofile)
         return;
 
     subtitleFileDisplayName = getFileDisplayName(subfile);

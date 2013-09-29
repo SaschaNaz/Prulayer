@@ -66,7 +66,7 @@ else if (!subfile && getFileExtension(file) === "smi")
         if (videofile && subfile)
             break;
     }
-    if (!subfile)
+    if (!videofile)
         return;
 
     subtitleFileDisplayName = getFileDisplayName(subfile);
