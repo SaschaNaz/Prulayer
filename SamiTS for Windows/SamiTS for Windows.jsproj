@@ -60,8 +60,39 @@
     <Content Include="images\smalllogo.scale-100.png" />
     <Content Include="images\splashscreen.scale-100.png" />
     <Content Include="images\storelogo.scale-100.png" />
-    <Content Include="js\default.ts" />
     <Content Include="css\default.css" />
+    <Content Include="js\SamiTS\SamiTS\sami.js" />
+    <Content Include="js\SamiTS\SamiTS\webvttwriter.ts" />
+    <Content Include="js\SamiTS\SamiTS\syncparser.ts" />
+    <Content Include="js\SamiTS\SamiTS\sdpuswriter.ts" />
+    <Content Include="js\SamiTS\SamiTS\subripwriter.ts" />
+    <Content Include="js\SamiTS\SamiTS\samiconverter.ts" />
+    <Content Include="js\SamiTS\SamiTS\htmltagfinder.ts" />
+    <Content Include="js\SamiTS\SamiTS\webvttwriter.js">
+      <DependentUpon>webvttwriter.ts</DependentUpon>
+    </Content>
+    <Content Include="js\SamiTS\SamiTS\syncparser.js">
+      <DependentUpon>syncparser.ts</DependentUpon>
+    </Content>
+    <Content Include="js\SamiTS\SamiTS\sdpuswriter.js">
+      <DependentUpon>sdpuswriter.ts</DependentUpon>
+    </Content>
+    <Content Include="js\SamiTS\SamiTS\subripwriter.js">
+      <DependentUpon>subripwriter.ts</DependentUpon>
+    </Content>
+    <Content Include="js\SamiTS\SamiTS\samiconverter.js">
+      <DependentUpon>samiconverter.ts</DependentUpon>
+    </Content>
+    <Content Include="js\SamiTS\SamiTS\htmltagfinder.js">
+      <DependentUpon>htmltagfinder.ts</DependentUpon>
+    </Content>
+    <Content Include="js\default.js" />
+    <Content Include="js\app.ts" />
+    <Content Include="js\app.js">
+      <DependentUpon>app.ts</DependentUpon>
+    </Content>
+    <Content Include="js\winjs.d.ts" />
+    <Content Include="js\winrt.d.ts" />
     <None Include="SamiTS for Windows_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
