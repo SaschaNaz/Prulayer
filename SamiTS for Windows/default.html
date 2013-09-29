@@ -10,6 +10,10 @@
     <script src="//Microsoft.WinJS.2.0/js/base.js"></script>
     <script src="//Microsoft.WinJS.2.0/js/ui.js"></script>
 
+    <!-- PlayerFramework references -->
+    <link href="/Microsoft.PlayerFramework.Js/css/PlayerFramework-dark.css" rel="stylesheet">
+    <script src="/Microsoft.PlayerFramework.Js/js/PlayerFramework.js"></script>
+
     <!-- SamiTS_for_Windows references -->
     <link href="/css/default.css" rel="stylesheet" />
     <script src="/js/SamiTS/SamiTS/sami.js"></script>
@@ -17,19 +21,29 @@
     <script src="/js/app.js"></script>
 </head>
 <body>
-    <h1>TypeScript HTML App</h1>
+    <input id="loader" type="file" multiple="multiple" onchange="load(event)" style="display: none;" />
+    <div style="height: 100%; display: -ms-grid; -ms-grid-rows: 1fr; -ms-grid-columns: 1fr;">
+        <!--<div style="z-index: 1000;">
+            <h1>TypeScript HTML App</h1>
 
-    <div id="content">
-        <div>
-            <input id="loader" type="file" multiple="multiple" onchange="load(event)" />
-        </div>
-        <input id="areaselector" type="button" style="display: none;" onclick="selectArea()" />
-        <div>
-            <div id="previewarea" style="width: 100%; height: 500px; display: none;">
-                <textarea id="output" style="width: 100%; height: 100%;" readonly="readonly"></textarea>
+            <div id="content">
+                <input id="areaselector" type="button" style="display: none;" onclick="selectArea()" />
+                <div id="previewarea" style="width: 100%; height: 500px; display: none;">
+                    <textarea id="output" style="width: calc(100% - 30px); height: 100%;" readonly="readonly"></textarea>
+                </div>
             </div>
-            <video id="player" style="width: 640px; height: 360px; display: none;" controls="controls"></video>
+        </div>-->
+        <div id="mediaplayer" data-win-control="PlayerFramework.MediaPlayer" data-win-options="{onplay: startPage.playHandler, onpause: startPage.pauseHandler}" onmspointerdown="pointerdown(event)" onmspointermove="pointermove(event)"></div>
+        <!--<video id="player" controls="controls"></video>-->
+        <!-- BEGINTEMPLATE: Template code for an app bar -->
+        <div id="appBar" data-win-control="WinJS.UI.AppBar" data-win-options="">
+            <button data-win-control="WinJS.UI.AppBarCommand"
+                    data-win-options="{id:'cmdAdd',label:'Add',icon:'add',
+                section:'global',tooltip:'Add video'}" onclick="loader.click()"></button>
+            <!--<hr data-win-control="WinJS.UI.AppBarCommand"
+                data-win-options="{type:'separator',section:'global'}" />-->
         </div>
+        <!-- ENDTEMPLATE -->
     </div>
 </body>
 

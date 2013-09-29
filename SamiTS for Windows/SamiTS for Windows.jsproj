@@ -50,6 +50,8 @@
     <MinimumVisualStudioVersion>12.0</MinimumVisualStudioVersion>
     <DefaultLanguage>en-US</DefaultLanguage>
     <PackageCertificateKeyFile>SamiTS for Windows_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <AppxBundlePlatforms>neutral</AppxBundlePlatforms>
   </PropertyGroup>
   <ItemGroup>
     <AppxManifest Include="package.appxmanifest">
@@ -87,15 +89,16 @@
       <DependentUpon>htmltagfinder.ts</DependentUpon>
     </Content>
     <Content Include="js\default.js" />
-    <Content Include="js\app.ts" />
+    <TypeScriptCompile Include="js\app.ts" />
     <Content Include="js\app.js">
       <DependentUpon>app.ts</DependentUpon>
     </Content>
-    <Content Include="js\winjs.d.ts" />
-    <Content Include="js\winrt.d.ts" />
+    <TypeScriptCompile Include="js\winjs.d.ts" />
+    <TypeScriptCompile Include="js\winrt.d.ts" />
     <None Include="SamiTS for Windows_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <SDKReference Include="Microsoft.PlayerFramework.Js, Version=1.8.2.1" />
     <SDKReference Include="Microsoft.WinJS.2.0, Version=1.0" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\$(WMSJSProjectDirectory)\Microsoft.VisualStudio.$(WMSJSProject).targets" />
