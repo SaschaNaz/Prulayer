@@ -2,6 +2,7 @@
 ///<reference path="winrt.d.ts" />
 ///<reference path="SamiTS/SamiTS/samiconverter.ts" />
 "use strict";
+//declare var player: HTMLVideoElement;
 //declare var output: HTMLTextAreaElement;
 var track;
 var style;
@@ -9,6 +10,10 @@ var style;
 //var isPreviewAreaShown = false;
 var subtitleFileDisplayName;
 var cursorTimerId;
+var keyboardTimerStarterId;
+var keyboardTimerId;
+var prevPointerX;
+var prevTime;
 
 var SubType;
 (function (SubType) {
@@ -18,11 +23,12 @@ var SubType;
 
 WinJS.UI["eventHandler"](play);
 WinJS.UI["eventHandler"](pause);
+WinJS.UI["eventHandler"](time);
 WinJS.Namespace.define("startPage", {
     playHandler: play,
-    pauseHandler: pause
+    pauseHandler: pause,
+    timeHandler: time
 });
-
 function play(evt) {
     if (cursorTimerId)
         clearTimeout(cursorTimerId);
@@ -43,15 +49,37 @@ function pointermove(evt) {
         cursorTimerId = setTimeout(function () {
             mediaplayer.style.cursor = "none";
         }, 3000);
+
+    if (prevPointerX != -1) {
+        mediaplayer.winControl.pause();
+        mediaplayer.winControl.currentTime = prevTime + (prevPointerX - evt.clientX) / 10;
+    }
 }
 function pointerdown(evt) {
-    if ((mediaplayer.winControl.readyState == 4) && (evt.pointerType !== "mouse" || evt.button != 2))
+    if (evt.clientY <= mediaplayer.clientHeight - 42 && (mediaplayer.winControl.readyState == 4) && (evt.pointerType !== "mouse" || evt.button == 0)) {
+        prevPointerX = evt.clientX;
+        prevTime = mediaplayer.winControl.currentTime;
+    }
+}
+function pointerup(evt) {
+    if (prevPointerX >= 0 && (mediaplayer.winControl.readyState == 4) && (evt.pointerType !== "mouse" || evt.button == 0)) {
         if (mediaplayer.winControl.paused)
             mediaplayer.winControl.play();
 else
             mediaplayer.winControl.pause();
+    }
+
+    prevPointerX = -1;
+    prevTime = -1;
+}
+function time(evt) {
+    (mediaplayer.querySelector("[title=Seek]").getElementsByTagName("input")[0]).focus();
 }
 
+//function keyup(evt: KeyboardEvent) {
+//    if (evt.keyCode == 37 || evt.keyCode == 39)
+//        mediaplayer.winControl.play();
+//}
 function load(evt) {
     var player = mediaplayer.getElementsByTagName("video")[0];
     var files = (evt.target).files;

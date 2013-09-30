@@ -33,7 +33,7 @@
                 </div>
             </div>
         </div>-->
-        <div id="mediaplayer" data-win-control="PlayerFramework.MediaPlayer" data-win-options="{onplay: startPage.playHandler, onpause: startPage.pauseHandler}" onmspointerdown="pointerdown(event)" onmspointermove="pointermove(event)"></div>
+        <div id="mediaplayer" data-win-control="PlayerFramework.MediaPlayer" data-win-options="{onplay: startPage.playHandler, onpause: startPage.pauseHandler, ontimeupdate: startPage.timeHandler}" onmspointerdown="pointerdown(event)" onmspointermove="pointermove(event)" onmspointerup="pointerup(event)" ></div>
         <!--<video id="player" controls="controls"></video>-->
         <!-- BEGINTEMPLATE: Template code for an app bar -->
         <div id="appBar" data-win-control="WinJS.UI.AppBar" data-win-options="">

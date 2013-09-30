@@ -7,13 +7,16 @@
 //declare var previewarea: HTMLDivElement;
 declare var mediaplayer: HTMLDivElement;
 //declare var player: HTMLVideoElement;
-declare var appBar: any;
 //declare var output: HTMLTextAreaElement;
 var track: HTMLTrackElement;
 var style: HTMLStyleElement;
 //var isPreviewAreaShown = false;
 var subtitleFileDisplayName: string;
 var cursorTimerId: number;
+var keyboardTimerStarterId: number;
+var keyboardTimerId: number;
+var prevPointerX: number;
+var prevTime: number;
 
 enum SubType {
     WebVTT, SRT
@@ -21,11 +24,12 @@ enum SubType {
 
 WinJS.UI["eventHandler"](play);
 WinJS.UI["eventHandler"](pause);
+WinJS.UI["eventHandler"](time);
 WinJS.Namespace.define("startPage", {
     playHandler: play,
-    pauseHandler: pause
+    pauseHandler: pause,
+    timeHandler: time
 });
-
 function play(evt: Event) {
     if (cursorTimerId)
         clearTimeout(cursorTimerId);
@@ -38,7 +42,7 @@ function pause(evt: Event) {
         clearTimeout(cursorTimerId);
     mediaplayer.style.cursor = "auto";
 }
-function pointermove(evt: Event) {
+function pointermove(evt: MSPointerEvent) {
     if (cursorTimerId)
         clearTimeout(cursorTimerId);
     mediaplayer.style.cursor = "auto";
@@ -46,14 +50,36 @@ function pointermove(evt: Event) {
         cursorTimerId = setTimeout(() => {
             mediaplayer.style.cursor = "none";
         }, 3000);
+
+    if (prevPointerX != -1) {
+        mediaplayer.winControl.pause();
+        mediaplayer.winControl.currentTime = prevTime + (prevPointerX - evt.clientX) / 10;
+    }
 }
 function pointerdown(evt: MSPointerEvent) {
-    if ((mediaplayer.winControl.readyState == 4) && (evt.pointerType !== "mouse" || evt.button != 2))
+    if (evt.clientY <= mediaplayer.clientHeight - 42 && (mediaplayer.winControl.readyState == 4) && (evt.pointerType !== "mouse" || evt.button == 0)) {
+        prevPointerX = evt.clientX;
+        prevTime = mediaplayer.winControl.currentTime;
+    }
+}
+function pointerup(evt: MSPointerEvent) {
+    if (prevPointerX >= 0 && (mediaplayer.winControl.readyState == 4) && (evt.pointerType !== "mouse" || evt.button == 0)) {
         if (mediaplayer.winControl.paused)
             mediaplayer.winControl.play();
         else
             mediaplayer.winControl.pause();
+    }
+
+    prevPointerX = -1;
+    prevTime = -1;
 }
+function time(evt: KeyboardEvent) {
+    (<HTMLElement>mediaplayer.querySelector("[title=Seek]").getElementsByTagName("input")[0]).focus();
+}
+//function keyup(evt: KeyboardEvent) {
+//    if (evt.keyCode == 37 || evt.keyCode == 39)
+//        mediaplayer.winControl.play();
+//}
 
 function load(evt: Event) {
     var player: HTMLVideoElement = mediaplayer.getElementsByTagName("video")[0];
