@@ -31,7 +31,7 @@ function domContentLoad() {
     WinJS.UI.processAll().done(function () {
         slider = mediaplayer.querySelector("[title=Seek]").getElementsByTagName("input")[0];
         slider.focus();
-        slider.addEventListener("blur", function () {
+        mediaplayer.addEventListener("focus", function () {
             slider.focus();
         });
     });
