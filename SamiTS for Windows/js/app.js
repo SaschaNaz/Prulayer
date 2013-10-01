@@ -46,12 +46,23 @@ function addPointerEventTransmitter(name) {
 
 function addKeyboardEventTransmitter(name) {
     mediaplayer.addEventListener("key" + name, function (evt) {
-        if (slider && evt.target != slider) {
-            slider.focus();
-            if (evt.keyCode == 37)
-                mediaplayer.winControl.currentTime -= 10;
+        switch (evt.key) {
+            case "Right":
+            case "Left":
+                if (evt.target != slider) {
+                    slider.focus();
+                    if (evt.keyCode == 37)
+                        mediaplayer.winControl.currentTime -= 10;
 else if (evt.keyCode == 39)
-                mediaplayer.winControl.currentTime += 10;
+                        mediaplayer.winControl.currentTime += 10;
+                }
+                break;
+            case "Spacebar":
+                if (mediaplayer.winControl.paused)
+                    mediaplayer.winControl.play();
+else
+                    mediaplayer.winControl.pause();
+                break;
         }
     });
 }
