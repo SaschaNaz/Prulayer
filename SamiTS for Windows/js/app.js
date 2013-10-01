@@ -2,6 +2,8 @@
 ///<reference path="winrt.d.ts" />
 ///<reference path="SamiTS/SamiTS/samiconverter.ts" />
 "use strict";
+var slider;
+
 //declare var player: HTMLVideoElement;
 //declare var output: HTMLTextAreaElement;
 var track;
@@ -12,8 +14,8 @@ var subtitleFileDisplayName;
 var cursorTimerId;
 var keyboardTimerStarterId;
 var keyboardTimerId;
-var prevPointerX;
-var prevTime;
+var prevPointerX = -1;
+var prevTime = -1;
 
 var SubType;
 (function (SubType) {
@@ -21,13 +23,55 @@ var SubType;
     SubType[SubType["SRT"] = 1] = "SRT";
 })(SubType || (SubType = {}));
 
+function domContentLoad() {
+    addPointerEventTransmitter("down");
+    addPointerEventTransmitter("up");
+    addPointerEventTransmitter("move");
+    addKeyboardEventTransmitter("down");
+    WinJS.UI.processAll().done(function () {
+        slider = mediaplayer.querySelector("[title=Seek]").getElementsByTagName("input")[0];
+        slider.focus();
+        slider.addEventListener("blur", function () {
+            slider.focus();
+        });
+    });
+}
+
+function addPointerEventTransmitter(name) {
+    mediaplayer.addEventListener("pointer" + name, function (evt) {
+        if (evt.clientY <= document.body.clientHeight - 42)
+            touchpanel.dispatchEvent(copyPointerEvent(evt, "pointer" + name));
+    });
+}
+
+function addKeyboardEventTransmitter(name) {
+    mediaplayer.addEventListener("key" + name, function (evt) {
+        if (slider && evt.target != slider) {
+            slider.focus();
+            if (evt.keyCode == 37)
+                mediaplayer.winControl.currentTime -= 10;
+else if (evt.keyCode == 39)
+                mediaplayer.winControl.currentTime += 10;
+        }
+    });
+}
+
+function copyPointerEvent(evt, name) {
+    var newevt = document.createEvent("PointerEvent");
+    (newevt).initPointerEvent(name, true, true, evt.view, evt.detail, evt.screenX, evt.screenY, evt.clientX, evt.clientY, evt.ctrlKey, evt.altKey, evt.shiftKey, evt.metaKey, evt.button, evt.relatedTarget, evt.offsetX, evt.offsetY, evt.width, evt.height, evt.pressure, evt.rotation, evt.tiltX, evt.tiltY, evt.pointerId, evt.pointerType, evt.hwTimestamp, evt.isPrimary);
+    return newevt;
+}
+
+//function copyKeyboardEvent(evt: KeyboardEvent, name: string) {
+//    var newevt = document.createEvent("KeyboardEvent");
+//    (<any>newevt).initKeyboardEvent(name, true, true, evt.view, evt.key, evt.location, [], evt.repeat, evt.locale);
+//    return newevt;
+//}
 WinJS.UI["eventHandler"](play);
 WinJS.UI["eventHandler"](pause);
-WinJS.UI["eventHandler"](time);
 WinJS.Namespace.define("startPage", {
     playHandler: play,
-    pauseHandler: pause,
-    timeHandler: time
+    pauseHandler: pause
 });
 function play(evt) {
     if (cursorTimerId)
@@ -51,12 +95,15 @@ function pointermove(evt) {
         }, 3000);
 
     if (prevPointerX != -1) {
+        var differ = prevPointerX - evt.clientX;
+        if (Math.abs(differ) / screen.deviceXDPI < 0.04)
+            return;
         mediaplayer.winControl.pause();
-        mediaplayer.winControl.currentTime = prevTime + (prevPointerX - evt.clientX) / 10;
+        mediaplayer.winControl.currentTime = prevTime + differ / document.body.clientHeight * 10;
     }
 }
 function pointerdown(evt) {
-    if (evt.clientY <= mediaplayer.clientHeight - 42 && (mediaplayer.winControl.readyState == 4) && (evt.pointerType !== "mouse" || evt.button == 0)) {
+    if ((mediaplayer.winControl.readyState == 4) && (evt.pointerType !== "mouse" || evt.button == 0)) {
         prevPointerX = evt.clientX;
         prevTime = mediaplayer.winControl.currentTime;
     }
@@ -72,10 +119,10 @@ else
     prevPointerX = -1;
     prevTime = -1;
 }
-function time(evt) {
-    (mediaplayer.querySelector("[title=Seek]").getElementsByTagName("input")[0]).focus();
-}
 
+//function time(evt: KeyboardEvent) {
+//    (<HTMLElement>mediaplayer.querySelector("[title=Seek]").getElementsByTagName("input")[0]).focus();
+//}
 //function keyup(evt: KeyboardEvent) {
 //    if (evt.keyCode == 37 || evt.keyCode == 39)
 //        mediaplayer.winControl.play();
