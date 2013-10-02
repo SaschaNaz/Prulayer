@@ -43,9 +43,9 @@
     </div>
     <!-- BEGINTEMPLATE: Template code for an app bar -->
     <div id="appBar" data-win-control="WinJS.UI.AppBar" data-win-options="">
-        <button data-win-control="WinJS.UI.AppBarCommand"
+        <button id="exportbutton" data-win-control="WinJS.UI.AppBarCommand"
                 data-win-options="{id:'cmdExport',label:'Export',icon:'save',
-                section:'global',tooltip:'Export subtitle'}" onclick="exportSubtitle()"></button>
+                section:'global',tooltip:'Export subtitle'}" onclick="exportSubtitle()" style="display: none;"></button>
         <button data-win-control="WinJS.UI.AppBarCommand"
                 data-win-options="{id:'cmdOpen',label:'Open',icon:'openfile',
                 section:'global',tooltip:'Open video'}" onclick="loader.click()"></button>

@@ -6,15 +6,12 @@
 interface PointerEvent extends MSPointerEvent {
 }
 
-//declare var areaselector: HTMLButtonElement;
-//declare var previewarea: HTMLDivElement;
 declare var mediaplayer: HTMLDivElement;
 declare var touchpanel: HTMLDivElement;
+declare var exportbutton: HTMLButtonElement;
 var slider: HTMLInputElement;
-//declare var player: HTMLVideoElement;
-//declare var output: HTMLTextAreaElement;
 var style: HTMLStyleElement;
-//var isPreviewAreaShown = false;
+
 var subtitleString: string;
 var subtitleFileDisplayName: string;
 var cursorTimerId: number;
@@ -173,7 +170,6 @@ function load(evt: Event) {
         while (player.firstChild) player.removeChild(player.firstChild);
         if (subtitleString) subtitleString = '';
         mediaplayer.winControl.src = URL.createObjectURL(videofile);
-        mediaplayer.winControl.play();
     }
     if (subfile) {
         var track = document.createElement("track");
@@ -183,6 +179,8 @@ function load(evt: Event) {
         track.src = URL.createObjectURL(subfile);
         track.default = true;
         player.appendChild(track);
+        mediaplayer.winControl.play();
+        exportbutton.style.display = 'none';
     }
     if (samifile) {
         subtitleFileDisplayName = getFileDisplayName(samifile);
@@ -197,6 +195,8 @@ function load(evt: Event) {
             track.src = URL.createObjectURL(new Blob([result], { type: "text/vtt" }));
             track.default = true;
             player.appendChild(track);
+            mediaplayer.winControl.play();
+            exportbutton.style.display = 'inline-block';
         };
         var loadStyle = (resultStyle: HTMLStyleElement) => {
             if (style)

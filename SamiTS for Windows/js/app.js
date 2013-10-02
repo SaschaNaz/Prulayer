@@ -3,12 +3,8 @@
 ///<reference path="SamiTS/SamiTS/samiconverter.ts" />
 "use strict";
 var slider;
-
-//declare var player: HTMLVideoElement;
-//declare var output: HTMLTextAreaElement;
 var style;
 
-//var isPreviewAreaShown = false;
 var subtitleString;
 var subtitleFileDisplayName;
 var cursorTimerId;
@@ -168,7 +164,6 @@ else if (!subfile)
         if (subtitleString)
             subtitleString = '';
         mediaplayer.winControl.src = URL.createObjectURL(videofile);
-        mediaplayer.winControl.play();
     }
     if (subfile) {
         var track = document.createElement("track");
@@ -178,6 +173,8 @@ else if (!subfile)
         track.src = URL.createObjectURL(subfile);
         track.default = true;
         player.appendChild(track);
+        mediaplayer.winControl.play();
+        exportbutton.style.display = 'none';
     }
     if (samifile) {
         subtitleFileDisplayName = getFileDisplayName(samifile);
@@ -192,6 +189,8 @@ else if (!subfile)
             track.src = URL.createObjectURL(new Blob([result], { type: "text/vtt" }));
             track.default = true;
             player.appendChild(track);
+            mediaplayer.winControl.play();
+            exportbutton.style.display = 'inline-block';
         };
         var loadStyle = function (resultStyle) {
             if (style)
