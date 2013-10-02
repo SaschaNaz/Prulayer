@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest">
-  <Identity Name="55ca3190-99a0-47df-851d-9a6455162f37" Version="1.0.0.3" Publisher="CN=sasch_000" />
+  <Identity Name="55ca3190-99a0-47df-851d-9a6455162f37" Version="1.0.0.5" Publisher="CN=sasch_000" />
   <Properties>
     <DisplayName>SamiTS for Windows</DisplayName>
     <PublisherDisplayName>sasch_000</PublisherDisplayName>
