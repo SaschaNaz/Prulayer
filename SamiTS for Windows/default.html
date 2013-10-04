@@ -46,6 +46,11 @@
         <button id="exportbutton" data-win-control="WinJS.UI.AppBarCommand"
                 data-win-options="{id:'cmdExport',label:'Export',icon:'save',
                 section:'global',tooltip:'Export subtitle'}" onclick="exportSubtitle()" style="display: none;"></button>
+        <button id="exportbutton" data-win-control="WinJS.UI.AppBarCommand"
+                data-win-options="{id:'cmdExport',label:'Background',icon:'flag',
+                section:'global',tooltip:'Play background'}" onclick="flagBackground()"></button>
+        <hr data-win-control="WinJS.UI.AppBarCommand"
+        data-win-options="{type:'separator',section:'global'}" />
         <button data-win-control="WinJS.UI.AppBarCommand"
                 data-win-options="{id:'cmdOpen',label:'Open',icon:'openfile',
                 section:'global',tooltip:'Open video'}" onclick="read()"></button>

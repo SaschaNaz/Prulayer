@@ -145,7 +145,7 @@ function read() {
 }
 
 function load(files) {
-    var player = mediaplayer.getElementsByTagName("video")[0];
+    var player = mediaplayer.winControl.mediaElement;
 
     //var files = (<HTMLInputElement>evt.target).files;
     var videofile;
@@ -263,5 +263,12 @@ function exportSubtitle() {
         });
         //navigator.msSaveBlob(subtitleFile, subtitleFileDisplayName + ".vtt");
     }
+}
+
+function flagBackground() {
+    if (mediaplayer.winControl.msAudioCategory === "Other")
+        mediaplayer.winControl.msAudioCategory = "BackgroundCapableMedia";
+else
+        mediaplayer.winControl.msAudioCategory = "Other";
 }
 //# sourceMappingURL=app.js.map
