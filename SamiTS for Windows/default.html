@@ -24,7 +24,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", domContentLoad)
     </script>
-    <input id="loader" type="file" multiple="multiple" onchange="load(event)" style="display: none;" />
+    <!--<input id="loader" type="file" multiple="multiple" onchange="load(event)" style="display: none;" />-->
     <div style="height: 100%; display: -ms-grid; -ms-grid-rows: 1fr 84px; -ms-grid-columns: 1fr;">
         <!--<div style="z-index: 1000;">
             <h1>TypeScript HTML App</h1>
@@ -48,7 +48,7 @@
                 section:'global',tooltip:'Export subtitle'}" onclick="exportSubtitle()" style="display: none;"></button>
         <button data-win-control="WinJS.UI.AppBarCommand"
                 data-win-options="{id:'cmdOpen',label:'Open',icon:'openfile',
-                section:'global',tooltip:'Open video'}" onclick="loader.click()"></button>
+                section:'global',tooltip:'Open video'}" onclick="read()"></button>
         <!--<hr data-win-control="WinJS.UI.AppBarCommand"
             data-win-options="{type:'separator',section:'global'}" />-->
     </div>

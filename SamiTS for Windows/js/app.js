@@ -134,26 +134,39 @@ else
 //    if (evt.keyCode == 37 || evt.keyCode == 39)
 //        mediaplayer.winControl.play();
 //}
-function load(evt) {
+function read() {
+    var picker = new Windows.Storage.Pickers.FileOpenPicker();
+    picker.fileTypeFilter.push(".3g2", ".3gp2", ".3gp", ".3gpp", ".m4v", ".mp4v", ".mp4", ".mov");
+    picker.fileTypeFilter.push(".m2ts");
+    picker.fileTypeFilter.push(".asf", ".wm", ".wmv");
+    picker.fileTypeFilter.push(".avi");
+    picker.fileTypeFilter.push(".smi", ".vtt", ".ttml");
+    picker.pickMultipleFilesAsync().done(load);
+}
+
+function load(files) {
     var player = mediaplayer.getElementsByTagName("video")[0];
-    var files = (evt.target).files;
+
+    //var files = (<HTMLInputElement>evt.target).files;
     var videofile;
     var subfile;
     var samifile;
     for (var i = 0; i < files.length; i++) {
         var file = files[i];
-        if (!videofile && mediaplayer.winControl.canPlayType(file.type))
-            videofile = file;
-else if (!subfile)
-            switch (getFileExtension(file)) {
-                case "smi":
+        switch (getFileExtension(file)) {
+            case "smi":
+                if (!subfile)
                     samifile = file;
-                    break;
-                case "vtt":
-                case "ttml":
+                break;
+            case "vtt":
+            case "ttml":
+                if (!subfile)
                     subfile = file;
-                    break;
-            }
+                break;
+            default:
+                if (!videofile)
+                    videofile = file;
+        }
         if (videofile && (subfile || samifile))
             break;
     }
@@ -175,8 +188,7 @@ else if (!subfile)
         player.appendChild(track);
         mediaplayer.winControl.play();
         exportbutton.style.display = 'none';
-    }
-    if (samifile) {
+    } else if (samifile) {
         subtitleFileDisplayName = getFileDisplayName(samifile);
 
         var loadSubtitle = function (result) {
@@ -204,7 +216,8 @@ else if (!subfile)
         } catch (e) {
             new Windows.UI.Popups.MessageDialog("자막을 읽지 못했습니다.").showAsync();
         }
-    }
+    } else
+        mediaplayer.winControl.play();
 }
 
 function getExtensionForSubType(subtype) {
