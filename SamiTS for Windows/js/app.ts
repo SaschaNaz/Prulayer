@@ -176,8 +176,13 @@ function load(files: Windows.Foundation.Collections.IVectorView<Windows.Storage.
     }
 
     if (videofile) {
-        while (player.firstChild) player.removeChild(player.firstChild);
+        while (player.firstChild) {
+            URL.revokeObjectURL((<HTMLTrackElement>player.firstChild).src);
+            player.removeChild(player.firstChild);
+        }
         if (subtitleString) subtitleString = '';
+        if (mediaplayer.winControl.src)
+            URL.revokeObjectURL(mediaplayer.winControl.src);
         mediaplayer.winControl.src = URL.createObjectURL(videofile);
     }
     if (subfile) {
@@ -268,8 +273,18 @@ function exportSubtitle() {
 }
 
 function flagBackground() {
+    var src = mediaplayer.winControl.src;
+    var currentTime = mediaplayer.winControl.currentTime;
+    var paused = mediaplayer.winControl.paused;
+    mediaplayer.winControl.src = '';
     if (mediaplayer.winControl.msAudioCategory === "Other")
         mediaplayer.winControl.msAudioCategory = "BackgroundCapableMedia";
     else 
         mediaplayer.winControl.msAudioCategory = "Other";
+    mediaplayer.winControl.src = src;
+    mediaplayer.winControl.onloadedmetadata = () => {
+        mediaplayer.winControl.currentTime = currentTime;
+        if (!paused)
+            mediaplayer.winControl.play();
+    }
 }
