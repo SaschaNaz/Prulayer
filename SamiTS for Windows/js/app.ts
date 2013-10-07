@@ -176,6 +176,8 @@ function load(files: Windows.Foundation.Collections.IVectorView<Windows.Storage.
     }
 
     if (videofile) {
+        //while ((<Array>mediaplayer.winControl.tracks).length > 0)
+        //    URL.revokeObjectURL((<HTMLTrackElement><any>(<Array>mediaplayer.winControl.tracks).pop()).src);
         while (player.firstChild) {
             URL.revokeObjectURL((<HTMLTrackElement>player.firstChild).src);
             player.removeChild(player.firstChild);
@@ -186,6 +188,13 @@ function load(files: Windows.Foundation.Collections.IVectorView<Windows.Storage.
         mediaplayer.winControl.src = URL.createObjectURL(videofile);
     }
     if (subfile) {
+        //mediaplayer.winControl.tracks.push({
+        //    label: "日本語",
+        //    kind: "subtitles",
+        //    srclang: "ja",
+        //    src: URL.createObjectURL(subfile),
+        //    default: true
+        //});
         var track = document.createElement("track");
         track.label = "日本語";
         track.kind = "subtitles";
@@ -202,6 +211,13 @@ function load(files: Windows.Foundation.Collections.IVectorView<Windows.Storage.
         var loadSubtitle = (result: string) => {
             subtitleString = result;
 
+            //mediaplayer.winControl.tracks.push({
+            //    label: "日本語",
+            //    kind: "subtitles",
+            //    srclang: "ja",
+            //    src: URL.createObjectURL(new Blob([result], { type: "text/vtt" })),
+            //    default: true
+            //});
             var track = document.createElement("track");
             track.label = "日本語";
             track.kind = "subtitles";

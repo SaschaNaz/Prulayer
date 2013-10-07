@@ -183,6 +183,13 @@ function load(files) {
         mediaplayer.winControl.src = URL.createObjectURL(videofile);
     }
     if (subfile) {
+        //mediaplayer.winControl.tracks.push({
+        //    label: "日本語",
+        //    kind: "subtitles",
+        //    srclang: "ja",
+        //    src: URL.createObjectURL(subfile),
+        //    default: true
+        //});
         var track = document.createElement("track");
         track.label = "日本語";
         track.kind = "subtitles";
@@ -198,6 +205,13 @@ function load(files) {
         var loadSubtitle = function (result) {
             subtitleString = result;
 
+            //mediaplayer.winControl.tracks.push({
+            //    label: "日本語",
+            //    kind: "subtitles",
+            //    srclang: "ja",
+            //    src: URL.createObjectURL(new Blob([result], { type: "text/vtt" })),
+            //    default: true
+            //});
             var track = document.createElement("track");
             track.label = "日本語";
             track.kind = "subtitles";
