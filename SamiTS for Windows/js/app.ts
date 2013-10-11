@@ -1,6 +1,6 @@
 ﻿///<reference path="winjs.d.ts" />
 ///<reference path="winrt.d.ts" />
-///<reference path="SamiTS/SamiTS/samiconverter.ts" />
+///<reference path="SamiTS/sami.d.ts" />
 "use strict";
 
 interface PointerEvent extends MSPointerEvent {
