@@ -218,13 +218,25 @@ function load(files: Windows.Foundation.Collections.IVectorView<Windows.Storage.
             //    src: URL.createObjectURL(new Blob([result], { type: "text/vtt" })),
             //    default: true
             //});
-            var track = document.createElement("track");
-            track.label = "日本語";
-            track.kind = "subtitles";
-            track.srclang = "ja";
-            track.src = URL.createObjectURL(new Blob([result], { type: "text/vtt" }));
-            track.default = true;
-            player.appendChild(track);
+            //var track = document.createElement("track");
+            //track.label = "日本語";
+            //track.kind = "subtitles";
+            //track.srclang = "ja";
+            //track.src = URL.createObjectURL(new Blob([result], { type: "text/vtt" }));
+            //track.default = true;
+            //var tempvideo = document.createElement("video");
+            //tempvideo.appendChild(track);
+            //var trackobject = tempvideo.textTracks[0];
+            //tempvideo.removeChild(track);
+            mediaplayer.winControl.tracks = [
+                {
+                    kind: 'subtitles',
+                    label: '日本語',
+                    src: URL.createObjectURL(new Blob([result], { type: "text/vtt" })),
+                    srclang: 'ja',
+                    default: true
+                },
+            ];
             mediaplayer.winControl.play();
             exportbutton.style.display = 'inline-block';
         };
