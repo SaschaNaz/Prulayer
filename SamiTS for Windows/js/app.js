@@ -49,14 +49,14 @@ function addKeyboardEventTransmitter(name) {
                     slider.focus();
                     if (evt.keyCode == 37)
                         mediaplayer.winControl.currentTime -= 10;
-else if (evt.keyCode == 39)
+                    else if (evt.keyCode == 39)
                         mediaplayer.winControl.currentTime += 10;
                 }
                 break;
             case "Spacebar":
                 if (mediaplayer.winControl.paused)
                     mediaplayer.winControl.play();
-else
+                else
                     mediaplayer.winControl.pause();
                 break;
         }
@@ -65,7 +65,7 @@ else
 
 function copyPointerEvent(evt, name) {
     var newevt = document.createEvent("PointerEvent");
-    (newevt).initPointerEvent(name, true, true, evt.view, evt.detail, evt.screenX, evt.screenY, evt.clientX, evt.clientY, evt.ctrlKey, evt.altKey, evt.shiftKey, evt.metaKey, evt.button, evt.relatedTarget, evt.offsetX, evt.offsetY, evt.width, evt.height, evt.pressure, evt.rotation, evt.tiltX, evt.tiltY, evt.pointerId, evt.pointerType, evt.hwTimestamp, evt.isPrimary);
+    newevt.initPointerEvent(name, true, true, evt.view, evt.detail, evt.screenX, evt.screenY, evt.clientX, evt.clientY, evt.ctrlKey, evt.altKey, evt.shiftKey, evt.metaKey, evt.button, evt.relatedTarget, evt.offsetX, evt.offsetY, evt.width, evt.height, evt.pressure, evt.rotation, evt.tiltX, evt.tiltY, evt.pointerId, evt.pointerType, evt.hwTimestamp, evt.isPrimary);
     return newevt;
 }
 
@@ -119,7 +119,7 @@ function pointerup(evt) {
     if (prevPointerX >= 0 && (mediaplayer.winControl.readyState == 4) && (evt.pointerType !== "mouse" || evt.button == 0)) {
         if (mediaplayer.winControl.paused)
             mediaplayer.winControl.play();
-else
+        else
             mediaplayer.winControl.pause();
     }
 
@@ -173,7 +173,7 @@ function load(files) {
 
     if (videofile) {
         while (player.firstChild) {
-            URL.revokeObjectURL((player.firstChild).src);
+            URL.revokeObjectURL(player.firstChild.src);
             player.removeChild(player.firstChild);
         }
         if (subtitleString)
@@ -252,18 +252,18 @@ function load(files) {
 
 function getExtensionForSubType(subtype) {
     switch (subtype) {
-        case SubType.WebVTT:
+        case 0 /* WebVTT */:
             return ".vtt";
-        case SubType.SRT:
+        case 1 /* SRT */:
             return ".srt";
     }
 }
 
 function getMIMETypeForSubType(subtype) {
     switch (subtype) {
-        case SubType.WebVTT:
+        case 0 /* WebVTT */:
             return "text/vtt";
-        case SubType.SRT:
+        case 1 /* SRT */:
             return "text/plain";
     }
 }
@@ -286,7 +286,7 @@ function exportSubtitle() {
         picker.suggestedFileName = subtitleFileDisplayName;
         picker.pickSaveFileAsync().done(function (file) {
             Windows.Storage.CachedFileManager.deferUpdates(file);
-            (Windows.Storage.FileIO.writeTextAsync(file, subtitleString)).done(function () {
+            Windows.Storage.FileIO.writeTextAsync(file, subtitleString).done(function () {
                 Windows.Storage.CachedFileManager.completeUpdatesAsync(file);
             });
             ;
@@ -302,7 +302,7 @@ function flagBackground() {
     mediaplayer.winControl.src = '';
     if (mediaplayer.winControl.msAudioCategory === "Other")
         mediaplayer.winControl.msAudioCategory = "BackgroundCapableMedia";
-else
+    else
         mediaplayer.winControl.msAudioCategory = "Other";
     mediaplayer.winControl.src = src;
     mediaplayer.winControl.onloadedmetadata = function () {
