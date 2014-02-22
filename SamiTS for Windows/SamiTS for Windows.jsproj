@@ -49,9 +49,10 @@
     <RequiredPlatformVersion>8.1</RequiredPlatformVersion>
     <MinimumVisualStudioVersion>12.0</MinimumVisualStudioVersion>
     <DefaultLanguage>en-US</DefaultLanguage>
-    <PackageCertificateKeyFile>SamiTS for Windows_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>SamiTS for Windows_StoreKey.pfx</PackageCertificateKeyFile>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AppxBundlePlatforms>neutral</AppxBundlePlatforms>
+    <PackageCertificateThumbprint>CFF6FFBDE4B93673E05D84AE1B4E962BF809BE91</PackageCertificateThumbprint>
   </PropertyGroup>
   <ItemGroup>
     <AppxManifest Include="package.appxmanifest">
@@ -66,6 +67,8 @@
     <Content Include="js\SamiTS\sami.js" />
     <Content Include="js\SamiTS\sami.d.ts" />
     <Content Include="js\default.js" />
+    <None Include="SamiTS for Windows_StoreKey.pfx" />
+    <None Include="Package.StoreAssociation.xml" />
     <TypeScriptCompile Include="js\app.ts" />
     <Content Include="js\app.js">
       <DependentUpon>app.ts</DependentUpon>

@@ -311,4 +311,3 @@ function flagBackground() {
             mediaplayer.winControl.play();
     };
 }
-//# sourceMappingURL=app.js.map
