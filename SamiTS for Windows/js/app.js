@@ -242,7 +242,7 @@ function load(files) {
         };
 
         try  {
-            SamiTS.convertToWebVTTFromFile(samifile, loadSubtitle, loadStyle);
+            SamiTS.convertToWebVTTFromFile(samifile, loadSubtitle, { onstyleload: loadStyle });
         } catch (e) {
             new Windows.UI.Popups.MessageDialog("자막을 읽지 못했습니다.").showAsync();
         }
