@@ -3,13 +3,9 @@
 ///<reference path="SamiTS/sami.d.ts" />
 "use strict";
 
-interface PointerEvent extends MSPointerEvent {
-}
-
 declare var mediaplayer: HTMLDivElement;
 declare var touchpanel: HTMLDivElement;
 declare var exportbutton: HTMLButtonElement;
-var slider: HTMLInputElement;
 var style: HTMLStyleElement;
 
 var subtitleString: string;
@@ -29,13 +25,6 @@ function domContentLoad() {
     addPointerEventTransmitter("up");
     addPointerEventTransmitter("move");
     addKeyboardEventTransmitter("down");
-    WinJS.UI.processAll().done(() => {
-        slider = <HTMLInputElement>mediaplayer.querySelector("[title=Seek]").getElementsByTagName("input")[0];
-        slider.focus();
-        mediaplayer.addEventListener("focus", () => {
-            slider.focus();
-        });
-    });
 }
 
 function addPointerEventTransmitter(name: string) {
@@ -49,14 +38,10 @@ function addKeyboardEventTransmitter(name: string) {
     mediaplayer.addEventListener("key" + name, (evt: KeyboardEvent) => {    
         switch (evt.key) {
             case "Right":
+                mediaplayer.winControl.currentTime -= 10;
+                break;
             case "Left":
-                if (evt.target != slider) {
-                    slider.focus();
-                    if (evt.keyCode == 37)
-                        mediaplayer.winControl.currentTime -= 10;
-                    else if (evt.keyCode == 39)
-                        mediaplayer.winControl.currentTime += 10;
-                }
+                mediaplayer.winControl.currentTime += 10;
                 break;
             case "Spacebar":
                 if (mediaplayer.winControl.paused)
@@ -71,8 +56,8 @@ function addKeyboardEventTransmitter(name: string) {
 }
 
 function copyPointerEvent(evt: PointerEvent, name: string) {
-    var newevt = document.createEvent("PointerEvent");
-    (<any>newevt).initPointerEvent(name, true, true, evt.view, evt.detail, evt.screenX, evt.screenY, evt.clientX, evt.clientY, evt.ctrlKey, evt.altKey, evt.shiftKey, evt.metaKey, evt.button, evt.relatedTarget, evt.offsetX, evt.offsetY, evt.width, evt.height, evt.pressure, evt.rotation, evt.tiltX, evt.tiltY, evt.pointerId, evt.pointerType, evt.hwTimestamp, evt.isPrimary);
+    var newevt = <PointerEvent>document.createEvent("PointerEvent");
+    newevt.initPointerEvent(name, true, true, evt.view, evt.detail, evt.screenX, evt.screenY, evt.clientX, evt.clientY, evt.ctrlKey, evt.altKey, evt.shiftKey, evt.metaKey, evt.button, evt.relatedTarget, evt.offsetX, evt.offsetY, evt.width, evt.height, evt.pressure, evt.rotation, evt.tiltX, evt.tiltY, evt.pointerId, evt.pointerType, evt.hwTimestamp, evt.isPrimary);
     return newevt;
 }
 

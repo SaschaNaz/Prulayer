@@ -2,7 +2,6 @@
 ///<reference path="winrt.d.ts" />
 ///<reference path="SamiTS/sami.d.ts" />
 "use strict";
-var slider;
 var style;
 
 var subtitleString;
@@ -24,13 +23,6 @@ function domContentLoad() {
     addPointerEventTransmitter("up");
     addPointerEventTransmitter("move");
     addKeyboardEventTransmitter("down");
-    WinJS.UI.processAll().done(function () {
-        slider = mediaplayer.querySelector("[title=Seek]").getElementsByTagName("input")[0];
-        slider.focus();
-        mediaplayer.addEventListener("focus", function () {
-            slider.focus();
-        });
-    });
 }
 
 function addPointerEventTransmitter(name) {
@@ -44,14 +36,10 @@ function addKeyboardEventTransmitter(name) {
     mediaplayer.addEventListener("key" + name, function (evt) {
         switch (evt.key) {
             case "Right":
+                mediaplayer.winControl.currentTime -= 10;
+                break;
             case "Left":
-                if (evt.target != slider) {
-                    slider.focus();
-                    if (evt.keyCode == 37)
-                        mediaplayer.winControl.currentTime -= 10;
-                    else if (evt.keyCode == 39)
-                        mediaplayer.winControl.currentTime += 10;
-                }
+                mediaplayer.winControl.currentTime += 10;
                 break;
             case "Spacebar":
                 if (mediaplayer.winControl.paused)
@@ -311,3 +299,4 @@ function flagBackground() {
             mediaplayer.winControl.play();
     };
 }
+//# sourceMappingURL=app.js.map
