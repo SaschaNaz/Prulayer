@@ -9,6 +9,7 @@ var subtitleFileDisplayName;
 var cursorTimerId;
 var prevPointerX = -1;
 var prevTime = -1;
+var wasPaused = false;
 
 var SubType;
 (function (SubType) {
@@ -95,7 +96,7 @@ function pointermove(evt) {
 
     if (prevPointerX != -1) {
         var differ = prevPointerX - evt.clientX;
-        if (Math.abs(differ) / screen.deviceXDPI < 0.04)
+        if (isClick(differ))
             return;
         mediaplayer.winControl.pause();
         mediaplayer.winControl.currentTime = prevTime + differ / document.body.clientHeight * 10;
@@ -105,11 +106,14 @@ function pointerdown(evt) {
     if ((mediaplayer.winControl.readyState == 4) && (evt.pointerType !== "mouse" || evt.button == 0)) {
         prevPointerX = evt.clientX;
         prevTime = mediaplayer.winControl.currentTime;
+        wasPaused = mediaplayer.winControl.paused;
+
+        mediaplayer.winControl.pause();
     }
 }
 function pointerup(evt) {
-    if (prevPointerX >= 0 && (mediaplayer.winControl.readyState == 4) && (evt.pointerType !== "mouse" || evt.button == 0)) {
-        if (mediaplayer.winControl.paused)
+    if (isClick(prevPointerX - evt.clientX)) {
+        if (wasPaused)
             mediaplayer.winControl.play();
         else
             mediaplayer.winControl.pause();
@@ -117,6 +121,10 @@ function pointerup(evt) {
 
     prevPointerX = -1;
     prevTime = -1;
+    wasPaused = false;
+}
+function isClick(moveX) {
+    return (Math.abs(moveX) / screen.deviceXDPI < 0.04);
 }
 
 //function time(evt: KeyboardEvent) {

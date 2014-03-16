@@ -75,7 +75,6 @@
     </Content>
     <TypeScriptCompile Include="js\winjs.d.ts" />
     <TypeScriptCompile Include="js\winrt.d.ts" />
-    <None Include="SamiTS for Windows_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <SDKReference Include="Microsoft.PlayerFramework.Js, Version=1.8.2.2" />

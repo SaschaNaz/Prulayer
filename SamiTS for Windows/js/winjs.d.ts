@@ -81,8 +81,8 @@ declare module WinJS {
         function addEventListener(type: string, listener: EventListener, capture: boolean): void;
         function back(): void;
         function forward(): void;
-        function navigate(location: any, initialState: any);
-        function navigate(location: any);
+        function navigate(location: any, initialState: any): Promise<boolean>;
+        function navigate(location: any): Promise<boolean>;
         function removeEventListener(type: string, listener: EventListener, capture: boolean): void;
         var onbeforenavigate: CustomEvent;
         var onnavigated: CustomEvent;

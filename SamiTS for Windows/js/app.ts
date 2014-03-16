@@ -13,6 +13,7 @@ var subtitleFileDisplayName: string;
 var cursorTimerId: number;
 var prevPointerX = -1;
 var prevTime = -1;
+var wasPaused = false;
 
 enum SubType {
     WebVTT, SRT
@@ -98,7 +99,7 @@ function pointermove(evt: PointerEvent) {
 
     if (prevPointerX != -1) {
         var differ = prevPointerX - evt.clientX;
-        if (Math.abs(differ) / screen.deviceXDPI < 0.04)
+        if (isClick(differ))
             return;
         mediaplayer.winControl.pause();
         mediaplayer.winControl.currentTime = prevTime + differ / document.body.clientHeight * 10;
@@ -108,11 +109,14 @@ function pointerdown(evt: PointerEvent) {
     if ((mediaplayer.winControl.readyState == 4) && (evt.pointerType !== "mouse" || evt.button == 0)) {
         prevPointerX = evt.clientX;
         prevTime = mediaplayer.winControl.currentTime;
+        wasPaused = mediaplayer.winControl.paused;
+
+        mediaplayer.winControl.pause();
     }
 }
 function pointerup(evt: PointerEvent) {
-    if (prevPointerX >= 0 && (mediaplayer.winControl.readyState == 4) && (evt.pointerType !== "mouse" || evt.button == 0)) {
-        if (mediaplayer.winControl.paused)
+    if (isClick(prevPointerX - evt.clientX)) {
+        if (wasPaused)
             mediaplayer.winControl.play();
         else
             mediaplayer.winControl.pause();
@@ -120,6 +124,10 @@ function pointerup(evt: PointerEvent) {
 
     prevPointerX = -1;
     prevTime = -1;
+    wasPaused = false;
+}
+function isClick(moveX: number) {
+    return (Math.abs(moveX) / screen.deviceXDPI < 0.04);
 }
 //function time(evt: KeyboardEvent) {
 //    (<HTMLElement>mediaplayer.querySelector("[title=Seek]").getElementsByTagName("input")[0]).focus();
@@ -146,7 +154,7 @@ function load(files: Windows.Foundation.Collections.IVectorView<Windows.Storage.
     var subfile: File;
     var samifile: File;
     for (var i = 0; i < files.length; i++) {
-        var file = files[i];
+        var file = <File>files[i];
         switch (getFileExtension(file)) {
             case "smi":
                 if (!subfile) samifile = file;
