@@ -7,8 +7,6 @@ var style;
 var subtitleString;
 var subtitleFileDisplayName;
 var cursorTimerId;
-var keyboardTimerStarterId;
-var keyboardTimerId;
 var prevPointerX = -1;
 var prevTime = -1;
 
@@ -23,6 +21,12 @@ function domContentLoad() {
     addPointerEventTransmitter("up");
     addPointerEventTransmitter("move");
     addKeyboardEventTransmitter("down");
+    WinJS.UI.processAll().done(function () {
+        var slider = mediaplayer.querySelector("[title=Seek]").getElementsByTagName("input")[0];
+        slider.addEventListener("focus", function () {
+            mediaplayer.focus();
+        });
+    });
 }
 
 function addPointerEventTransmitter(name) {
@@ -35,10 +39,10 @@ function addPointerEventTransmitter(name) {
 function addKeyboardEventTransmitter(name) {
     mediaplayer.addEventListener("key" + name, function (evt) {
         switch (evt.key) {
-            case "Right":
+            case "Left":
                 mediaplayer.winControl.currentTime -= 10;
                 break;
-            case "Left":
+            case "Right":
                 mediaplayer.winControl.currentTime += 10;
                 break;
             case "Spacebar":
