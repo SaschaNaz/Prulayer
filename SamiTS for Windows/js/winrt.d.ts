@@ -1,5 +1,3 @@
-﻿
-
 /* *****************************************************************************
 Copyright (c) Microsoft Corporation. All rights reserved. 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
@@ -3255,7 +3253,7 @@ declare module Windows {
                 done<U>(success?: (value: Windows.Foundation.Collections.IVectorView<Windows.Devices.Sms.ISmsMessage>) => any, error?: (error: any) => any, progress?: (progress: any) => void ): void;
                 operation: {
                     progress: Windows.Foundation.AsyncOperationProgressHandler<Windows.Foundation.Collections.IVectorView<Windows.Devices.Sms.ISmsMessage>, number>;
-                    completed: Windows.Foundation.AsyncOperationCompletedHandler<Windows.Foundation.Collections.IVectorView<Windows.Devices.Sms.ISmsMessage>>;
+                    completed: Windows.Foundation.AsyncOperationWithProgressCompletedHandler<Windows.Foundation.Collections.IVectorView<Windows.Devices.Sms.ISmsMessage>, number>;
                     getResults(): Windows.Foundation.Collections.IVectorView<Windows.Devices.Sms.ISmsMessage>;
                 }
             }
@@ -14644,4 +14642,3 @@ declare module Windows.Foundation {
         done?<U>(success?: (value: T) => any, error?: (error: any) => any, progress?: (progress: any) => void ): void;
     }
 }
-
