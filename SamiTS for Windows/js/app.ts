@@ -43,7 +43,10 @@ function addKeyboardEventTransmitter(name: string) {
     mediaplayer.addEventListener("key" + name, (evt: KeyboardEvent) => {    
         switch (evt.key) {
             case "Left":
-                mediaplayer.winControl.currentTime -= 10;
+                if (mediaplayer.winControl.currentTime >= 10)
+                    mediaplayer.winControl.currentTime -= 10;
+                else
+                    mediaplayer.winControl.currentTime = 0;
                 break;
             case "Right":
                 mediaplayer.winControl.currentTime += 10;
