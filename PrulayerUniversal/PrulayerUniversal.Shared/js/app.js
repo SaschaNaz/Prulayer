@@ -17,7 +17,17 @@ var SubType;
     SubType[SubType["SRT"] = 1] = "SRT";
 })(SubType || (SubType = {}));
 
+document.addEventListener("DOMContentLoaded", domContentLoad);
+
 function domContentLoad() {
+    touchpanel.onpointerdown = pointerdown;
+    touchpanel.onpointermove = pointermove;
+    touchpanel.onpointerup = pointerup;
+
+    exportButton.onclick = exportSubtitle;
+    flagButton.onclick = flagBackground;
+    openButton.onclick = read;
+
     addPointerEventTransmitter("down");
     addPointerEventTransmitter("up");
     addPointerEventTransmitter("move");
@@ -201,7 +211,7 @@ function load(files) {
         track.default = true;
         player.appendChild(track);
         mediaplayer.winControl.play();
-        exportbutton.style.display = 'none';
+        exportButton.style.display = 'none';
     } else if (samifile) {
         subtitleFileDisplayName = getFileDisplayName(samifile);
 
@@ -235,7 +245,7 @@ function load(files) {
                 }
             ];
             mediaplayer.winControl.play();
-            exportbutton.style.display = 'inline-block';
+            exportButton.style.display = 'inline-block';
         };
         var loadStyle = function (resultStyle) {
             if (style)

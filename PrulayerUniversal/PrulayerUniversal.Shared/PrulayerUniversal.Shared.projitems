@@ -6,6 +6,12 @@
     <SharedGUID>4de88e7f-ac6d-4f0b-a33a-975839af7a56</SharedGUID>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)js\SamiTS\sami.js" />
+    <Content Include="$(MSBuildThisFileDirectory)js\SamiTS\sami.d.ts" />
+    <TypeScriptCompile Include="$(MSBuildThisFileDirectory)js\app.ts" />
+	<Content Include="$(MSBuildThisFileDirectory)js\app.js" />
     <Content Include="$(MSBuildThisFileDirectory)js\default.js" />
+    <TypeScriptCompile Include="$(MSBuildThisFileDirectory)js\winjs.d.ts" />
+    <TypeScriptCompile Include="$(MSBuildThisFileDirectory)js\winrt.d.ts" />
   </ItemGroup>
 </Project>

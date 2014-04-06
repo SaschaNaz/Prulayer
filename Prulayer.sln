@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.30324.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{262852C6-CD72-467D-83FE-5EEB1973A190}") = "Prulayer", "SamiTS for Windows\Prulayer.jsproj", "{55CA3190-99A0-47DF-851D-9A6455162F37}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SharedApp", "SharedApp", "{EE38145E-5FEC-4F99-8CEC-DDCA64549DAF}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "PrulayerUniversal.Shared", "PrulayerUniversal\PrulayerUniversal.Shared\PrulayerUniversal.Shared.shproj", "{4DE88E7F-AC6D-4F0B-A33A-975839AF7A56}"
@@ -30,30 +28,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{55CA3190-99A0-47DF-851D-9A6455162F37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{55CA3190-99A0-47DF-851D-9A6455162F37}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{55CA3190-99A0-47DF-851D-9A6455162F37}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{55CA3190-99A0-47DF-851D-9A6455162F37}.Debug|ARM.ActiveCfg = Debug|ARM
-		{55CA3190-99A0-47DF-851D-9A6455162F37}.Debug|ARM.Build.0 = Debug|ARM
-		{55CA3190-99A0-47DF-851D-9A6455162F37}.Debug|ARM.Deploy.0 = Debug|ARM
-		{55CA3190-99A0-47DF-851D-9A6455162F37}.Debug|x64.ActiveCfg = Debug|x64
-		{55CA3190-99A0-47DF-851D-9A6455162F37}.Debug|x64.Build.0 = Debug|x64
-		{55CA3190-99A0-47DF-851D-9A6455162F37}.Debug|x64.Deploy.0 = Debug|x64
-		{55CA3190-99A0-47DF-851D-9A6455162F37}.Debug|x86.ActiveCfg = Debug|x86
-		{55CA3190-99A0-47DF-851D-9A6455162F37}.Debug|x86.Build.0 = Debug|x86
-		{55CA3190-99A0-47DF-851D-9A6455162F37}.Debug|x86.Deploy.0 = Debug|x86
-		{55CA3190-99A0-47DF-851D-9A6455162F37}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{55CA3190-99A0-47DF-851D-9A6455162F37}.Release|Any CPU.Build.0 = Release|Any CPU
-		{55CA3190-99A0-47DF-851D-9A6455162F37}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{55CA3190-99A0-47DF-851D-9A6455162F37}.Release|ARM.ActiveCfg = Release|ARM
-		{55CA3190-99A0-47DF-851D-9A6455162F37}.Release|ARM.Build.0 = Release|ARM
-		{55CA3190-99A0-47DF-851D-9A6455162F37}.Release|ARM.Deploy.0 = Release|ARM
-		{55CA3190-99A0-47DF-851D-9A6455162F37}.Release|x64.ActiveCfg = Release|x64
-		{55CA3190-99A0-47DF-851D-9A6455162F37}.Release|x64.Build.0 = Release|x64
-		{55CA3190-99A0-47DF-851D-9A6455162F37}.Release|x64.Deploy.0 = Release|x64
-		{55CA3190-99A0-47DF-851D-9A6455162F37}.Release|x86.ActiveCfg = Release|x86
-		{55CA3190-99A0-47DF-851D-9A6455162F37}.Release|x86.Build.0 = Release|x86
-		{55CA3190-99A0-47DF-851D-9A6455162F37}.Release|x86.Deploy.0 = Release|x86
 		{B0A64F6F-05FA-4C94-ACD9-0F5328A9F0BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B0A64F6F-05FA-4C94-ACD9-0F5328A9F0BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0A64F6F-05FA-4C94-ACD9-0F5328A9F0BC}.Debug|Any CPU.Deploy.0 = Debug|Any CPU

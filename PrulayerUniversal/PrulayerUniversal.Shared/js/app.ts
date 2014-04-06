@@ -5,7 +5,9 @@
 
 declare var mediaplayer: HTMLDivElement;
 declare var touchpanel: HTMLDivElement;
-declare var exportbutton: HTMLButtonElement;
+declare var exportButton: HTMLButtonElement;
+declare var flagButton: HTMLButtonElement;
+declare var openButton: HTMLButtonElement;
 var style: HTMLStyleElement;
 
 var subtitleString: string;
@@ -19,7 +21,17 @@ enum SubType {
     WebVTT, SRT
 }
 
+document.addEventListener("DOMContentLoaded", domContentLoad);
+
 function domContentLoad() {
+    touchpanel.onpointerdown = pointerdown;
+    touchpanel.onpointermove = pointermove;
+    touchpanel.onpointerup = pointerup;
+
+    exportButton.onclick = exportSubtitle;
+    flagButton.onclick = flagBackground;
+    openButton.onclick = read;
+
     addPointerEventTransmitter("down");
     addPointerEventTransmitter("up");
     addPointerEventTransmitter("move");
@@ -201,7 +213,7 @@ function load(files: Windows.Foundation.Collections.IVectorView<Windows.Storage.
         track.default = true;
         player.appendChild(track);
         mediaplayer.winControl.play();
-        exportbutton.style.display = 'none';
+        exportButton.style.display = 'none';
     }
     else if (samifile) {
         subtitleFileDisplayName = getFileDisplayName(samifile);
@@ -236,7 +248,7 @@ function load(files: Windows.Foundation.Collections.IVectorView<Windows.Storage.
                 },
             ];
             mediaplayer.winControl.play();
-            exportbutton.style.display = 'inline-block';
+            exportButton.style.display = 'inline-block';
         };
         var loadStyle = (resultStyle: HTMLStyleElement) => {
             if (style)
