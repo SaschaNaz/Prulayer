@@ -11,11 +11,40 @@
     <script src="//Microsoft.Phone.WinJS.2.1/js/base.js"></script>
     <script src="//Microsoft.Phone.WinJS.2.1/js/ui.js"></script>
 
+    <!-- PlayerFramework references -->
+    <link href="/Microsoft.PlayerFramework.Js/css/PlayerFramework-dark.css" rel="stylesheet">
+    <script src="/Microsoft.PlayerFramework.Js/js/PlayerFramework.js"></script>
+
+    <!-- SamiTS references -->
+    <script src="/js/SamiTS/sami.js"></script>
+
     <!-- PrulayerUniversal.Phone references -->
     <link href="/css/default.css" rel="stylesheet" />
     <script src="/js/default.js"></script>
+    <script src="/js/app.js"></script>
 </head>
 <body class="phone">
-    <p>Content goes here</p>
+    <div style="height: 100%; display: -ms-grid; -ms-grid-rows: 1fr 84px; -ms-grid-columns: 1fr;">
+        <div id="mediaplayer" style="-ms-grid-row-span: 2" data-win-control="PlayerFramework.MediaPlayer" data-win-options="{onplay: startPage.playHandler, onpause: startPage.pauseHandler}"></div>
+        <div id="touchpanel"></div>
+        <!--<video id="player" controls="controls"></video>-->
+    </div>
+    <!-- BEGINTEMPLATE: Template code for an app bar -->
+    <div id="appBar" data-win-control="WinJS.UI.AppBar" data-win-options="">
+        <button id="exportButton" data-win-control="WinJS.UI.AppBarCommand"
+                data-win-options="{id:'cmdExport',label:'Export',icon:'save',
+                section:'global',tooltip:'Export subtitle'}" style="display: none;"></button>
+        <button id="flagButton" data-win-control="WinJS.UI.AppBarCommand"
+                data-win-options="{id:'cmdExport',label:'Background',icon:'flag',
+                section:'global',tooltip:'Play background'}"></button>
+        <hr data-win-control="WinJS.UI.AppBarCommand"
+            data-win-options="{type:'separator',section:'global'}" />
+        <button id="openButton" data-win-control="WinJS.UI.AppBarCommand"
+                data-win-options="{id:'cmdOpen',label:'Open',icon:'openfile',
+                section:'global',tooltip:'Open video'}"></button>
+        <!--<hr data-win-control="WinJS.UI.AppBarCommand"
+            data-win-options="{type:'separator',section:'global'}" />-->
+    </div>
+    <!-- ENDTEMPLATE -->
 </body>
 </html>
