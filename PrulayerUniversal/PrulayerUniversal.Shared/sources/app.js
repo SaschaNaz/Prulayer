@@ -1,7 +1,7 @@
-﻿///<reference path="winjs.d.ts" />
-///<reference path="winrt.d.ts" />
-///<reference path="SamiTS/sami.d.ts" />
-"use strict";
+﻿"use strict";
+var StorageFile = Windows.Storage.StorageFile;
+var FileIO = Windows.Storage.FileIO;
+
 var style;
 
 var subtitleString;
@@ -31,7 +31,6 @@ function domContentLoad() {
     addPointerEventTransmitter("down");
     addPointerEventTransmitter("up");
     addPointerEventTransmitter("move");
-    addKeyboardEventTransmitter("down");
     WinJS.UI.processAll().done(function () {
         var slider = mediaplayer.querySelector("[title=Seek]").getElementsByTagName("input")[0];
         slider.addEventListener("focus", function () {
@@ -47,39 +46,12 @@ function addPointerEventTransmitter(name) {
     });
 }
 
-function addKeyboardEventTransmitter(name) {
-    mediaplayer.addEventListener("key" + name, function (evt) {
-        switch (evt.key) {
-            case "Left":
-                if (mediaplayer.winControl.currentTime >= 10)
-                    mediaplayer.winControl.currentTime -= 10;
-                else
-                    mediaplayer.winControl.currentTime = 0;
-                break;
-            case "Right":
-                mediaplayer.winControl.currentTime += 10;
-                break;
-            case "Spacebar":
-                if (mediaplayer.winControl.paused)
-                    mediaplayer.winControl.play();
-                else
-                    mediaplayer.winControl.pause();
-                break;
-        }
-    });
-}
-
 function copyPointerEvent(evt, name) {
     var newevt = document.createEvent("PointerEvent");
     newevt.initPointerEvent(name, evt.bubbles, evt.cancelable, evt.view, evt.detail, evt.screenX, evt.screenY, evt.clientX, evt.clientY, evt.ctrlKey, evt.altKey, evt.shiftKey, evt.metaKey, evt.button, evt.relatedTarget, evt.offsetX, evt.offsetY, evt.width, evt.height, evt.pressure, evt.rotation, evt.tiltX, evt.tiltY, evt.pointerId, evt.pointerType, evt.hwTimestamp, evt.isPrimary);
     return newevt;
 }
 
-//function copyKeyboardEvent(evt: KeyboardEvent, name: string) {
-//    var newevt = document.createEvent("KeyboardEvent");
-//    (<any>newevt).initKeyboardEvent(name, true, true, evt.view, evt.key, evt.location, [], evt.repeat, evt.locale);
-//    return newevt;
-//}
 WinJS.UI["eventHandler"](play);
 WinJS.UI["eventHandler"](pause);
 WinJS.Namespace.define("startPage", {
@@ -196,20 +168,15 @@ function load(files) {
         mediaplayer.winControl.src = URL.createObjectURL(videofile);
     }
     if (subfile) {
-        //mediaplayer.winControl.tracks.push({
-        //    label: "日本語",
-        //    kind: "subtitles",
-        //    srclang: "ja",
-        //    src: URL.createObjectURL(subfile),
-        //    default: true
-        //});
-        var track = document.createElement("track");
-        track.label = "日本語";
-        track.kind = "subtitles";
-        track.srclang = "ja";
-        track.src = URL.createObjectURL(subfile);
-        track.default = true;
-        player.appendChild(track);
+        mediaplayer.winControl.tracks = [
+            {
+                kind: "subtitles",
+                label: "日本語",
+                src: URL.createObjectURL(subfile),
+                srclang: "ja",
+                default: true
+            }
+        ];
         mediaplayer.winControl.play();
         exportButton.style.display = 'none';
     } else if (samifile) {
@@ -218,23 +185,6 @@ function load(files) {
         var loadSubtitle = function (result) {
             subtitleString = result;
 
-            //mediaplayer.winControl.tracks.push({
-            //    label: "日本語",
-            //    kind: "subtitles",
-            //    srclang: "ja",
-            //    src: URL.createObjectURL(new Blob([result], { type: "text/vtt" })),
-            //    default: true
-            //});
-            //var track = document.createElement("track");
-            //track.label = "日本語";
-            //track.kind = "subtitles";
-            //track.srclang = "ja";
-            //track.src = URL.createObjectURL(new Blob([result], { type: "text/vtt" }));
-            //track.default = true;
-            //var tempvideo = document.createElement("video");
-            //tempvideo.appendChild(track);
-            //var trackobject = tempvideo.textTracks[0];
-            //tempvideo.removeChild(track);
             mediaplayer.winControl.tracks = [
                 {
                     kind: 'subtitles',
@@ -254,11 +204,14 @@ function load(files) {
             document.head.appendChild(resultStyle);
         };
 
-        try  {
-            SamiTS.convertToWebVTTFromFile(samifile, loadSubtitle, { onstyleload: loadStyle });
-        } catch (e) {
+        FileIO.readTextAsync(samifile).then(function (samistr) {
+            return SamiTS.createWebVTT(samistr, { createStyleElement: true });
+        }).then(function (result) {
+            loadSubtitle(result.subtitle);
+            loadStyle(result.stylesheet);
+        }, function (error) {
             new Windows.UI.Popups.MessageDialog("자막을 읽지 못했습니다.").showAsync();
-        }
+        });
     } else
         mediaplayer.winControl.play();
 }
@@ -299,7 +252,7 @@ function exportSubtitle() {
         picker.suggestedFileName = subtitleFileDisplayName;
         picker.pickSaveFileAsync().done(function (file) {
             Windows.Storage.CachedFileManager.deferUpdates(file);
-            Windows.Storage.FileIO.writeTextAsync(file, subtitleString).done(function () {
+            FileIO.writeTextAsync(file, subtitleString).done(function () {
                 Windows.Storage.CachedFileManager.completeUpdatesAsync(file);
             });
             ;
