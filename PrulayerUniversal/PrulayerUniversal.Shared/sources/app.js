@@ -153,10 +153,6 @@ function load(files) {
     }
 
     if (videofile) {
-        while (player.firstChild) {
-            URL.revokeObjectURL(player.firstChild.src);
-            player.removeChild(player.firstChild);
-        }
         if (samiDocument)
             samiDocument = null;
         if (mediaplayer.winControl.src)
@@ -164,29 +160,13 @@ function load(files) {
         mediaplayer.winControl.src = URL.createObjectURL(videofile);
     }
     if (subfile) {
-        mediaplayer.winControl.tracks = [
-            {
-                kind: "subtitles",
-                src: URL.createObjectURL(subfile),
-                default: true
-            }
-        ];
+        loadSubtitle(subfile);
+
         mediaplayer.winControl.play();
         exportButton.style.display = 'none';
     } else if (samifile) {
         subtitleFileDisplayName = getFileDisplayName(samifile);
 
-        var loadSubtitle = function (result) {
-            mediaplayer.winControl.tracks = [
-                {
-                    kind: 'subtitles',
-                    src: URL.createObjectURL(new Blob([result], { type: "text/vtt" })),
-                    default: true
-                }
-            ];
-            mediaplayer.winControl.play();
-            exportButton.style.display = 'inline-block';
-        };
         var loadStyle = function (resultStyle) {
             if (style)
                 document.head.removeChild(style);
@@ -202,7 +182,10 @@ function load(files) {
         }).then(function (result) {
             loadSubtitle(result.subtitle);
             loadStyle(result.stylesheet);
-        }, function (error) {
+
+            mediaplayer.winControl.play();
+            exportButton.style.display = 'inline-block';
+        }).catch(function (error) {
             new Windows.UI.Popups.MessageDialog("자막을 읽지 못했습니다.").showAsync();
         });
     } else
@@ -236,6 +219,22 @@ function getFileDisplayName(file) {
     var splitted = file.name.split('.');
     splitted = splitted.slice(0, splitted.length - 1);
     return splitted.join('.');
+}
+
+function loadSubtitle(result) {
+    var blob;
+    if (typeof result === "string")
+        blob = new Blob([result], { type: "text/vtt" });
+    else
+        blob = result;
+
+    mediaplayer.winControl.tracks = [
+        {
+            kind: 'subtitles',
+            src: URL.createObjectURL(blob, { oneTimeOnly: true }),
+            default: true
+        }
+    ];
 }
 
 function exportSubtitle() {

@@ -160,42 +160,20 @@ function load(files: Windows.Foundation.Collections.IVectorView<Windows.Storage.
     }
 
     if (videofile) {
-        //while ((<Array>mediaplayer.winControl.tracks).length > 0)
-        //    URL.revokeObjectURL((<HTMLTrackElement><any>(<Array>mediaplayer.winControl.tracks).pop()).src);
-        while (player.firstChild) {
-            URL.revokeObjectURL((<HTMLTrackElement>player.firstChild).src);
-            player.removeChild(player.firstChild);
-        }
         if (samiDocument) samiDocument = null;
         if (mediaplayer.winControl.src)
             URL.revokeObjectURL(mediaplayer.winControl.src);
         mediaplayer.winControl.src = URL.createObjectURL(videofile);
     }
     if (subfile) {
-        mediaplayer.winControl.tracks = [
-            {
-                kind: "subtitles",
-                src: URL.createObjectURL(subfile),
-                default: true
-            }
-        ];
+        loadSubtitle(subfile);
+
         mediaplayer.winControl.play();
         exportButton.style.display = 'none';
     }
     else if (samifile) {
         subtitleFileDisplayName = getFileDisplayName(samifile);
 
-        var loadSubtitle = (result: string) => {
-            mediaplayer.winControl.tracks = [
-                {
-                    kind: 'subtitles',
-                    src: URL.createObjectURL(new Blob([result], { type: "text/vtt" })),
-                    default: true
-                },
-            ];
-            mediaplayer.winControl.play();
-            exportButton.style.display = 'inline-block';
-        };
         var loadStyle = (resultStyle: HTMLStyleElement) => {
             if (style)
                 document.head.removeChild(style);
@@ -212,7 +190,11 @@ function load(files: Windows.Foundation.Collections.IVectorView<Windows.Storage.
             .then((result) => {
                 loadSubtitle(result.subtitle);
                 loadStyle(result.stylesheet);
-            }, (error) => {
+
+                mediaplayer.winControl.play();
+                exportButton.style.display = 'inline-block';
+            })
+            .catch((error) => {
                 new Windows.UI.Popups.MessageDialog("자막을 읽지 못했습니다.").showAsync();
             });
     }
@@ -247,6 +229,24 @@ function getFileDisplayName(file: StorageFile) {
     var splitted = file.name.split('.');
     splitted = splitted.slice(0, splitted.length - 1);
     return splitted.join('.');
+}
+
+function loadSubtitle(result: string): void;
+function loadSubtitle(result: StorageFile): void;
+function loadSubtitle(result: any) {
+    var blob: Blob;
+    if (typeof result === "string")
+        blob = new Blob([result], { type: "text/vtt" });
+    else
+        blob = result;
+
+    mediaplayer.winControl.tracks = [
+        {
+            kind: 'subtitles',
+            src: URL.createObjectURL(blob, { oneTimeOnly: true }),
+            default: true
+        },
+    ];
 }
 
 function exportSubtitle() {
