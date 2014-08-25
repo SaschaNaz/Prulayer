@@ -11,7 +11,7 @@ import FileIO = Windows.Storage.FileIO;
 
 var style: HTMLStyleElement;
 
-var subtitleString: string;
+var samiDocument: SamiTS.SAMIDocument;
 var subtitleFileDisplayName: string;
 var cursorTimerId: number;
 var prevPointerX = -1;
@@ -57,8 +57,8 @@ function copyPointerEvent(evt: PointerEvent, name: string) {
     return newevt;
 }
 
-WinJS.UI["eventHandler"](play);
-WinJS.UI["eventHandler"](pause);
+WinJS.UI.eventHandler(play);
+WinJS.UI.eventHandler(pause);
 WinJS.Namespace.define("startPage", {
     playHandler: play,
     pauseHandler: pause
@@ -126,11 +126,12 @@ function isClick(moveX: number) {
 
 function read() {
     var picker = new Windows.Storage.Pickers.FileOpenPicker();
-    picker.fileTypeFilter.push(".3g2", ".3gp2", ".3gp", ".3gpp", ".m4v", ".mp4v", ".mp4", ".mov");
-    picker.fileTypeFilter.push(".m2ts");
-    picker.fileTypeFilter.push(".asf", ".wm", ".wmv");
-    picker.fileTypeFilter.push(".avi");
-    picker.fileTypeFilter.push(".smi", ".vtt", ".ttml");
+    picker.fileTypeFilter.push(
+        ".3g2", ".3gp2", ".3gp", ".3gpp", ".m4v", ".mp4v", ".mp4", ".mov",
+        ".m2ts",
+        ".asf", ".wm", ".wmv",
+        ".avi",
+        ".smi", ".vtt", ".ttml");
     picker.pickMultipleFilesAsync().done(load);
 }
 
@@ -142,7 +143,7 @@ function load(files: Windows.Foundation.Collections.IVectorView<Windows.Storage.
     var subfile: StorageFile;
     var samifile: StorageFile;
     for (var i = 0; i < files.length; i++) {
-        var file: Windows.Storage.StorageFile = files[i];
+        var file: Windows.Storage.StorageFile = files.getAt(i);
         switch (getFileExtension(file)) {
             case "smi":
                 if (!subfile) samifile = file;
@@ -165,7 +166,7 @@ function load(files: Windows.Foundation.Collections.IVectorView<Windows.Storage.
             URL.revokeObjectURL((<HTMLTrackElement>player.firstChild).src);
             player.removeChild(player.firstChild);
         }
-        if (subtitleString) subtitleString = '';
+        if (samiDocument) samiDocument = null;
         if (mediaplayer.winControl.src)
             URL.revokeObjectURL(mediaplayer.winControl.src);
         mediaplayer.winControl.src = URL.createObjectURL(videofile);
@@ -174,9 +175,7 @@ function load(files: Windows.Foundation.Collections.IVectorView<Windows.Storage.
         mediaplayer.winControl.tracks = [
             {
                 kind: "subtitles",
-                label: "日本語",
                 src: URL.createObjectURL(subfile),
-                srclang: "ja",
                 default: true
             }
         ];
@@ -187,14 +186,10 @@ function load(files: Windows.Foundation.Collections.IVectorView<Windows.Storage.
         subtitleFileDisplayName = getFileDisplayName(samifile);
 
         var loadSubtitle = (result: string) => {
-            subtitleString = result;
-
             mediaplayer.winControl.tracks = [
                 {
                     kind: 'subtitles',
-                    label: '日本語',
                     src: URL.createObjectURL(new Blob([result], { type: "text/vtt" })),
-                    srclang: 'ja',
                     default: true
                 },
             ];
@@ -208,8 +203,12 @@ function load(files: Windows.Foundation.Collections.IVectorView<Windows.Storage.
             document.head.appendChild(resultStyle);
         }
 
-        FileIO.readTextAsync(samifile)
-            .then((samistr) => SamiTS.createWebVTT(samistr, { createStyleElement: true }))
+        Promise.resolve(FileIO.readTextAsync(samifile))
+            .then((samistr) => SamiTS.createSAMIDocument(samistr))
+            .then((samidoc) => {
+                samiDocument = samidoc;
+                return SamiTS.createWebVTT(samidoc, { createStyleElement: true })
+            })
             .then((result) => {
                 loadSubtitle(result.subtitle);
                 loadStyle(result.stylesheet);
@@ -251,16 +250,24 @@ function getFileDisplayName(file: StorageFile) {
 }
 
 function exportSubtitle() {
-    if (subtitleString) {
+    if (samiDocument) {
         var picker = new Windows.Storage.Pickers.FileSavePicker();
         picker.fileTypeChoices.insert("WebVTT", <any>[".vtt"]);
         picker.suggestedFileName = subtitleFileDisplayName;
-        picker.pickSaveFileAsync().done((file: Windows.Storage.StorageFile) => {
-            Windows.Storage.CachedFileManager.deferUpdates(file);
-            (<any>FileIO.writeTextAsync(file, subtitleString)).done(() => {
-                Windows.Storage.CachedFileManager.completeUpdatesAsync(file);
-            });;
-        })
+
+        var result: SamiTS.SamiTSResult;
+        var file: StorageFile;
+        SamiTS.createWebVTT(samiDocument)
+            .then((_result) => {
+                result = _result;
+                return picker.pickSaveFileAsync()
+            })
+            .then((_file: StorageFile) => {
+                file = _file;
+                Windows.Storage.CachedFileManager.deferUpdates(file);
+                return FileIO.writeTextAsync(file, result.subtitle)
+            })
+            .then(() => Windows.Storage.CachedFileManager.completeUpdatesAsync(file));
         //navigator.msSaveBlob(subtitleFile, subtitleFileDisplayName + ".vtt");
     }
 }
