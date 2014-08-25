@@ -19,7 +19,7 @@ var prevTime = -1;
 var wasPaused = false;
 
 enum SubType {
-    WebVTT, SRT
+    WebVTT, SubRip
 }
 
 document.addEventListener("DOMContentLoaded", domContentLoad);
@@ -36,6 +36,7 @@ function domContentLoad() {
     addPointerEventTransmitter("down");
     addPointerEventTransmitter("up");
     addPointerEventTransmitter("move");
+    mediaplayer.addEventListener("keydown", receiveKeyboardInput);
     WinJS.UI.processAll().done(() => {
         var slider = <HTMLInputElement>mediaplayer.querySelector("[title=Seek]").getElementsByTagName("input")[0];
         slider.addEventListener("focus", () => {
@@ -55,6 +56,27 @@ function copyPointerEvent(evt: PointerEvent, name: string) {
     var newevt = <PointerEvent>document.createEvent("PointerEvent");
     newevt.initPointerEvent(name, evt.bubbles, evt.cancelable, evt.view, evt.detail, evt.screenX, evt.screenY, evt.clientX, evt.clientY, evt.ctrlKey, evt.altKey, evt.shiftKey, evt.metaKey, evt.button, evt.relatedTarget, evt.offsetX, evt.offsetY, evt.width, evt.height, evt.pressure, evt.rotation, evt.tiltX, evt.tiltY, evt.pointerId, evt.pointerType, evt.hwTimestamp, evt.isPrimary);
     return newevt;
+}
+
+function receiveKeyboardInput(evt: KeyboardEvent) {
+    if (!samiDocument || !evt.ctrlKey)
+        return;
+    switch (evt.keyCode) {
+        case 188:
+            samiDocument.delay(-100);
+            break;
+        case 190:
+            samiDocument.delay(100);
+            break;
+        default:
+            return;
+    }
+    
+    return SamiTS.createWebVTT(samiDocument, { createStyleElement: true })
+        .then((result) => {
+            loadSubtitle(result.subtitle);
+            loadStyle(result.stylesheet);
+        });
 }
 
 WinJS.UI.eventHandler(play);
@@ -173,14 +195,7 @@ function load(files: Windows.Foundation.Collections.IVectorView<Windows.Storage.
     }
     else if (samifile) {
         subtitleFileDisplayName = getFileDisplayName(samifile);
-
-        var loadStyle = (resultStyle: HTMLStyleElement) => {
-            if (style)
-                document.head.removeChild(style);
-            style = resultStyle;
-            document.head.appendChild(resultStyle);
-        }
-
+        
         Promise.resolve(FileIO.readTextAsync(samifile))
             .then((samistr) => SamiTS.createSAMIDocument(samistr))
             .then((samidoc) => {
@@ -195,7 +210,10 @@ function load(files: Windows.Foundation.Collections.IVectorView<Windows.Storage.
                 exportButton.style.display = 'inline-block';
             })
             .catch((error) => {
-                new Windows.UI.Popups.MessageDialog("자막을 읽지 못했습니다.").showAsync();
+                if (error.message)
+                    new Windows.UI.Popups.MessageDialog("자막을 읽지 못했습니다.\r\n\r\nMessage: " + error.message).showAsync();
+                else
+                    new Windows.UI.Popups.MessageDialog("자막을 읽지 못했습니다.").showAsync();
             });
     }
     else
@@ -206,7 +224,7 @@ function getExtensionForSubType(subtype: SubType) {
     switch (subtype) {
         case SubType.WebVTT:
             return ".vtt";
-        case SubType.SRT:
+        case SubType.SubRip:
             return ".srt";
     }
 }
@@ -215,7 +233,7 @@ function getMIMETypeForSubType(subtype: SubType) {
     switch (subtype) {
         case SubType.WebVTT:
             return "text/vtt";
-        case SubType.SRT:
+        case SubType.SubRip:
             return "text/plain";
     }
 }
@@ -247,6 +265,13 @@ function loadSubtitle(result: any) {
             default: true
         },
     ];
+}
+
+function loadStyle(resultStyle: HTMLStyleElement) {
+    if (style)
+        document.head.removeChild(style);
+    style = resultStyle;
+    document.head.appendChild(resultStyle);
 }
 
 function exportSubtitle() {

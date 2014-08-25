@@ -14,7 +14,7 @@ var wasPaused = false;
 var SubType;
 (function (SubType) {
     SubType[SubType["WebVTT"] = 0] = "WebVTT";
-    SubType[SubType["SRT"] = 1] = "SRT";
+    SubType[SubType["SubRip"] = 1] = "SubRip";
 })(SubType || (SubType = {}));
 
 document.addEventListener("DOMContentLoaded", domContentLoad);
@@ -31,6 +31,7 @@ function domContentLoad() {
     addPointerEventTransmitter("down");
     addPointerEventTransmitter("up");
     addPointerEventTransmitter("move");
+    mediaplayer.addEventListener("keydown", receiveKeyboardInput);
     WinJS.UI.processAll().done(function () {
         var slider = mediaplayer.querySelector("[title=Seek]").getElementsByTagName("input")[0];
         slider.addEventListener("focus", function () {
@@ -50,6 +51,26 @@ function copyPointerEvent(evt, name) {
     var newevt = document.createEvent("PointerEvent");
     newevt.initPointerEvent(name, evt.bubbles, evt.cancelable, evt.view, evt.detail, evt.screenX, evt.screenY, evt.clientX, evt.clientY, evt.ctrlKey, evt.altKey, evt.shiftKey, evt.metaKey, evt.button, evt.relatedTarget, evt.offsetX, evt.offsetY, evt.width, evt.height, evt.pressure, evt.rotation, evt.tiltX, evt.tiltY, evt.pointerId, evt.pointerType, evt.hwTimestamp, evt.isPrimary);
     return newevt;
+}
+
+function receiveKeyboardInput(evt) {
+    if (!samiDocument || !evt.ctrlKey)
+        return;
+    switch (evt.keyCode) {
+        case 188:
+            samiDocument.delay(-100);
+            break;
+        case 190:
+            samiDocument.delay(100);
+            break;
+        default:
+            return;
+    }
+
+    return SamiTS.createWebVTT(samiDocument, { createStyleElement: true }).then(function (result) {
+        loadSubtitle(result.subtitle);
+        loadStyle(result.stylesheet);
+    });
 }
 
 WinJS.UI.eventHandler(play);
@@ -167,13 +188,6 @@ function load(files) {
     } else if (samifile) {
         subtitleFileDisplayName = getFileDisplayName(samifile);
 
-        var loadStyle = function (resultStyle) {
-            if (style)
-                document.head.removeChild(style);
-            style = resultStyle;
-            document.head.appendChild(resultStyle);
-        };
-
         Promise.resolve(FileIO.readTextAsync(samifile)).then(function (samistr) {
             return SamiTS.createSAMIDocument(samistr);
         }).then(function (samidoc) {
@@ -186,7 +200,10 @@ function load(files) {
             mediaplayer.winControl.play();
             exportButton.style.display = 'inline-block';
         }).catch(function (error) {
-            new Windows.UI.Popups.MessageDialog("자막을 읽지 못했습니다.").showAsync();
+            if (error.message)
+                new Windows.UI.Popups.MessageDialog("자막을 읽지 못했습니다.\r\n\r\nMessage: " + error.message).showAsync();
+            else
+                new Windows.UI.Popups.MessageDialog("자막을 읽지 못했습니다.").showAsync();
         });
     } else
         mediaplayer.winControl.play();
@@ -196,7 +213,7 @@ function getExtensionForSubType(subtype) {
     switch (subtype) {
         case 0 /* WebVTT */:
             return ".vtt";
-        case 1 /* SRT */:
+        case 1 /* SubRip */:
             return ".srt";
     }
 }
@@ -205,7 +222,7 @@ function getMIMETypeForSubType(subtype) {
     switch (subtype) {
         case 0 /* WebVTT */:
             return "text/vtt";
-        case 1 /* SRT */:
+        case 1 /* SubRip */:
             return "text/plain";
     }
 }
@@ -235,6 +252,13 @@ function loadSubtitle(result) {
             default: true
         }
     ];
+}
+
+function loadStyle(resultStyle) {
+    if (style)
+        document.head.removeChild(style);
+    style = resultStyle;
+    document.head.appendChild(resultStyle);
 }
 
 function exportSubtitle() {
