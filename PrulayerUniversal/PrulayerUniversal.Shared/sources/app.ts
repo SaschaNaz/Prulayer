@@ -154,10 +154,12 @@ function read() {
         ".asf", ".wm", ".wmv",
         ".avi",
         ".smi", ".vtt", ".ttml");
-    picker.pickMultipleFilesAsync().done(load);
+    return picker.pickMultipleFilesAsync().then(load);
 }
 
 function load(files: Windows.Foundation.Collections.IVectorView<Windows.Storage.StorageFile>) {
+    if (files.length == 0)
+        return;
     
     var player = <HTMLMediaElement>mediaplayer.winControl.mediaElement;
     //var files = (<HTMLInputElement>evt.target).files;

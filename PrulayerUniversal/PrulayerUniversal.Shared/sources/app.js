@@ -143,10 +143,13 @@ function isClick(moveX) {
 function read() {
     var picker = new Windows.Storage.Pickers.FileOpenPicker();
     picker.fileTypeFilter.push(".3g2", ".3gp2", ".3gp", ".3gpp", ".m4v", ".mp4v", ".mp4", ".mov", ".m2ts", ".asf", ".wm", ".wmv", ".avi", ".smi", ".vtt", ".ttml");
-    picker.pickMultipleFilesAsync().done(load);
+    return picker.pickMultipleFilesAsync().then(load);
 }
 
 function load(files) {
+    if (files.length == 0)
+        return;
+
     var player = mediaplayer.winControl.mediaElement;
 
     //var files = (<HTMLInputElement>evt.target).files;
