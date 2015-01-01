@@ -1,33 +1,26 @@
-﻿"use strict";
+"use strict";
 var StorageFile = Windows.Storage.StorageFile;
 var FileIO = Windows.Storage.FileIO;
-
 var style;
-
 var samiDocument;
 var subtitleFileDisplayName;
 var cursorTimerId;
 var prevPointerX = -1;
 var prevTime = -1;
 var wasPaused = false;
-
 var SubType;
 (function (SubType) {
     SubType[SubType["WebVTT"] = 0] = "WebVTT";
     SubType[SubType["SubRip"] = 1] = "SubRip";
 })(SubType || (SubType = {}));
-
 document.addEventListener("DOMContentLoaded", domContentLoad);
-
 function domContentLoad() {
     touchpanel.onpointerdown = pointerdown;
     touchpanel.onpointermove = pointermove;
     touchpanel.onpointerup = pointerup;
-
     exportButton.onclick = exportSubtitle;
     flagButton.onclick = flagBackground;
     openButton.onclick = read;
-
     addPointerEventTransmitter("down");
     addPointerEventTransmitter("up");
     addPointerEventTransmitter("move");
@@ -39,20 +32,17 @@ function domContentLoad() {
         });
     });
 }
-
 function addPointerEventTransmitter(name) {
     mediaplayer.addEventListener("pointer" + name, function (evt) {
         if (evt.clientY <= document.body.clientHeight - 42)
             touchpanel.dispatchEvent(copyPointerEvent(evt, "pointer" + name));
     });
 }
-
 function copyPointerEvent(evt, name) {
     var newevt = document.createEvent("PointerEvent");
     newevt.initPointerEvent(name, evt.bubbles, evt.cancelable, evt.view, evt.detail, evt.screenX, evt.screenY, evt.clientX, evt.clientY, evt.ctrlKey, evt.altKey, evt.shiftKey, evt.metaKey, evt.button, evt.relatedTarget, evt.offsetX, evt.offsetY, evt.width, evt.height, evt.pressure, evt.rotation, evt.tiltX, evt.tiltY, evt.pointerId, evt.pointerType, evt.hwTimestamp, evt.isPrimary);
     return newevt;
 }
-
 function receiveKeyboardInput(evt) {
     if (!samiDocument || !evt.ctrlKey)
         return;
@@ -66,13 +56,11 @@ function receiveKeyboardInput(evt) {
         default:
             return;
     }
-
     return SamiTS.createWebVTT(samiDocument, { createStyleElement: true }).then(function (result) {
         loadSubtitle(result.subtitle);
         loadStyle(result.stylesheet);
     });
 }
-
 WinJS.UI.eventHandler(play);
 WinJS.UI.eventHandler(pause);
 WinJS.Namespace.define("startPage", {
@@ -99,7 +87,6 @@ function pointermove(evt) {
         cursorTimerId = setTimeout(function () {
             mediaplayer.style.cursor = "none";
         }, 3000);
-
     if (prevPointerX != -1) {
         var differ = prevPointerX - evt.clientX;
         if (isClick(differ))
@@ -113,7 +100,6 @@ function pointerdown(evt) {
         prevPointerX = evt.clientX;
         prevTime = mediaplayer.winControl.currentTime;
         wasPaused = mediaplayer.winControl.paused;
-
         mediaplayer.winControl.pause();
     }
 }
@@ -124,7 +110,6 @@ function pointerup(evt) {
         else
             mediaplayer.winControl.pause();
     }
-
     prevPointerX = -1;
     prevTime = -1;
     wasPaused = false;
@@ -132,7 +117,6 @@ function pointerup(evt) {
 function isClick(moveX) {
     return (Math.abs(moveX) / screen.deviceXDPI < 0.04);
 }
-
 //function time(evt: KeyboardEvent) {
 //    (<HTMLElement>mediaplayer.querySelector("[title=Seek]").getElementsByTagName("input")[0]).focus();
 //}
@@ -145,13 +129,10 @@ function read() {
     picker.fileTypeFilter.push(".3g2", ".3gp2", ".3gp", ".3gpp", ".m4v", ".mp4v", ".mp4", ".mov", ".m2ts", ".asf", ".wm", ".wmv", ".avi", ".smi", ".vtt", ".ttml");
     return picker.pickMultipleFilesAsync().then(load);
 }
-
 function load(files) {
     if (files.length == 0)
         return;
-
     var player = mediaplayer.winControl.mediaElement;
-
     //var files = (<HTMLInputElement>evt.target).files;
     var videofile;
     var subfile;
@@ -175,7 +156,6 @@ function load(files) {
         if (videofile && (subfile || samifile))
             break;
     }
-
     if (videofile) {
         if (samiDocument)
             samiDocument = null;
@@ -185,21 +165,17 @@ function load(files) {
     }
     if (subfile) {
         loadSubtitle(subfile);
-
         mediaplayer.winControl.play();
         exportButton.style.display = 'none';
-    } else if (samifile) {
+    }
+    else if (samifile) {
         subtitleFileDisplayName = getFileDisplayName(samifile);
-
-        Promise.resolve(FileIO.readTextAsync(samifile)).then(function (samistr) {
-            return SamiTS.createSAMIDocument(samistr);
-        }).then(function (samidoc) {
+        Promise.resolve(FileIO.readTextAsync(samifile)).then(function (samistr) { return SamiTS.createSAMIDocument(samistr); }).then(function (samidoc) {
             samiDocument = samidoc;
             return SamiTS.createWebVTT(samidoc, { createStyleElement: true });
         }).then(function (result) {
             loadSubtitle(result.subtitle);
             loadStyle(result.stylesheet);
-
             mediaplayer.winControl.play();
             exportButton.style.display = 'inline-block';
         }).catch(function (error) {
@@ -208,10 +184,10 @@ function load(files) {
             else
                 new Windows.UI.Popups.MessageDialog("자막을 읽지 못했습니다.").showAsync();
         });
-    } else
+    }
+    else
         mediaplayer.winControl.play();
 }
-
 function getExtensionForSubType(subtype) {
     switch (subtype) {
         case 0 /* WebVTT */:
@@ -220,7 +196,6 @@ function getExtensionForSubType(subtype) {
             return ".srt";
     }
 }
-
 function getMIMETypeForSubType(subtype) {
     switch (subtype) {
         case 0 /* WebVTT */:
@@ -229,47 +204,40 @@ function getMIMETypeForSubType(subtype) {
             return "text/plain";
     }
 }
-
 function getFileExtension(file) {
     var splitted = file.name.split('.');
     return splitted[splitted.length - 1].toLowerCase();
 }
-
 function getFileDisplayName(file) {
     var splitted = file.name.split('.');
     splitted = splitted.slice(0, splitted.length - 1);
     return splitted.join('.');
 }
-
 function loadSubtitle(result) {
     var blob;
     if (typeof result === "string")
         blob = new Blob([result], { type: "text/vtt" });
     else
         blob = result;
-
     mediaplayer.winControl.tracks = [
         {
             kind: 'subtitles',
             src: URL.createObjectURL(blob, { oneTimeOnly: true }),
             default: true
-        }
+        },
     ];
 }
-
 function loadStyle(resultStyle) {
     if (style)
         document.head.removeChild(style);
     style = resultStyle;
     document.head.appendChild(resultStyle);
 }
-
 function exportSubtitle() {
     if (samiDocument) {
         var picker = new Windows.Storage.Pickers.FileSavePicker();
         picker.fileTypeChoices.insert("WebVTT", [".vtt"]);
         picker.suggestedFileName = subtitleFileDisplayName;
-
         var result;
         var file;
         SamiTS.createWebVTT(samiDocument).then(function (_result) {
@@ -279,13 +247,9 @@ function exportSubtitle() {
             file = _file;
             Windows.Storage.CachedFileManager.deferUpdates(file);
             return FileIO.writeTextAsync(file, result.subtitle);
-        }).then(function () {
-            return Windows.Storage.CachedFileManager.completeUpdatesAsync(file);
-        });
-        //navigator.msSaveBlob(subtitleFile, subtitleFileDisplayName + ".vtt");
+        }).then(function () { return Windows.Storage.CachedFileManager.completeUpdatesAsync(file); });
     }
 }
-
 function flagBackground() {
     var src = mediaplayer.winControl.src;
     var currentTime = mediaplayer.winControl.currentTime;
