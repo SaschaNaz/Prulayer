@@ -153,6 +153,7 @@ function read() {
         ".m2ts",
         ".asf", ".wm", ".wmv",
         ".avi",
+        ".mkv",
         ".smi", ".vtt", ".ttml");
     return picker.pickMultipleFilesAsync().then(load);
 }

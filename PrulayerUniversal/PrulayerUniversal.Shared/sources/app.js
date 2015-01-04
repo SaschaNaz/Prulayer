@@ -126,7 +126,7 @@ function isClick(moveX) {
 //}
 function read() {
     var picker = new Windows.Storage.Pickers.FileOpenPicker();
-    picker.fileTypeFilter.push(".3g2", ".3gp2", ".3gp", ".3gpp", ".m4v", ".mp4v", ".mp4", ".mov", ".m2ts", ".asf", ".wm", ".wmv", ".avi", ".smi", ".vtt", ".ttml");
+    picker.fileTypeFilter.push(".3g2", ".3gp2", ".3gp", ".3gpp", ".m4v", ".mp4v", ".mp4", ".mov", ".m2ts", ".asf", ".wm", ".wmv", ".avi", ".mkv", ".smi", ".vtt", ".ttml");
     return picker.pickMultipleFilesAsync().then(load);
 }
 function load(files) {
@@ -266,4 +266,3 @@ function flagBackground() {
             mediaplayer.winControl.play();
     };
 }
-//# sourceMappingURL=app.js.map
