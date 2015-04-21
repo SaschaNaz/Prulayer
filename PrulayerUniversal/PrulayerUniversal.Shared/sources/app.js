@@ -1,4 +1,4 @@
-"use strict";
+﻿"use strict";
 var StorageFile = Windows.Storage.StorageFile;
 var FileIO = Windows.Storage.FileIO;
 var style;
@@ -56,7 +56,8 @@ function receiveKeyboardInput(evt) {
         default:
             return;
     }
-    return SamiTS.createWebVTT(samiDocument, { createStyleElement: true }).then(function (result) {
+    return SamiTS.createWebVTT(samiDocument, { createStyleElement: true })
+        .then(function (result) {
         loadSubtitle(result.subtitle);
         loadStyle(result.stylesheet);
     });
@@ -170,15 +171,19 @@ function load(files) {
     }
     else if (samifile) {
         subtitleFileDisplayName = getFileDisplayName(samifile);
-        Promise.resolve(FileIO.readTextAsync(samifile)).then(function (samistr) { return SamiTS.createSAMIDocument(samistr); }).then(function (samidoc) {
+        Promise.resolve(FileIO.readTextAsync(samifile))
+            .then(function (samistr) { return SamiTS.createSAMIDocument(samistr); })
+            .then(function (samidoc) {
             samiDocument = samidoc;
             return SamiTS.createWebVTT(samidoc, { createStyleElement: true });
-        }).then(function (result) {
+        })
+            .then(function (result) {
             loadSubtitle(result.subtitle);
             loadStyle(result.stylesheet);
             mediaplayer.winControl.play();
             exportButton.style.display = 'inline-block';
-        }).catch(function (error) {
+        })
+            .catch(function (error) {
             if (error.message)
                 new Windows.UI.Popups.MessageDialog("자막을 읽지 못했습니다.\r\n\r\nMessage: " + error.message).showAsync();
             else
@@ -190,17 +195,17 @@ function load(files) {
 }
 function getExtensionForSubType(subtype) {
     switch (subtype) {
-        case 0 /* WebVTT */:
+        case SubType.WebVTT:
             return ".vtt";
-        case 1 /* SubRip */:
+        case SubType.SubRip:
             return ".srt";
     }
 }
 function getMIMETypeForSubType(subtype) {
     switch (subtype) {
-        case 0 /* WebVTT */:
+        case SubType.WebVTT:
             return "text/vtt";
-        case 1 /* SubRip */:
+        case SubType.SubRip:
             return "text/plain";
     }
 }
@@ -240,14 +245,17 @@ function exportSubtitle() {
         picker.suggestedFileName = subtitleFileDisplayName;
         var result;
         var file;
-        SamiTS.createWebVTT(samiDocument).then(function (_result) {
+        SamiTS.createWebVTT(samiDocument)
+            .then(function (_result) {
             result = _result;
             return picker.pickSaveFileAsync();
-        }).then(function (_file) {
+        })
+            .then(function (_file) {
             file = _file;
             Windows.Storage.CachedFileManager.deferUpdates(file);
             return FileIO.writeTextAsync(file, result.subtitle);
-        }).then(function () { return Windows.Storage.CachedFileManager.completeUpdatesAsync(file); });
+        })
+            .then(function () { return Windows.Storage.CachedFileManager.completeUpdatesAsync(file); });
     }
 }
 function flagBackground() {
@@ -266,3 +274,4 @@ function flagBackground() {
             mediaplayer.winControl.play();
     };
 }
+//# sourceMappingURL=app.js.map

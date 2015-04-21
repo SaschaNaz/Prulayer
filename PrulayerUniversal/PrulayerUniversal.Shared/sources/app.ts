@@ -199,7 +199,7 @@ function load(files: Windows.Foundation.Collections.IVectorView<Windows.Storage.
     else if (samifile) {
         subtitleFileDisplayName = getFileDisplayName(samifile);
         
-        Promise.resolve(FileIO.readTextAsync(samifile))
+        Promise.resolve(<Promise<string>><any>FileIO.readTextAsync(samifile))
             .then((samistr) => SamiTS.createSAMIDocument(samistr))
             .then((samidoc) => {
                 samiDocument = samidoc;
@@ -288,14 +288,14 @@ function exportSubtitle() {
         SamiTS.createWebVTT(samiDocument)
             .then((_result) => {
                 result = _result;
-                return picker.pickSaveFileAsync()
+                return <Promise<StorageFile>><any>picker.pickSaveFileAsync()
             })
             .then((_file: StorageFile) => {
                 file = _file;
                 Windows.Storage.CachedFileManager.deferUpdates(file);
                 return FileIO.writeTextAsync(file, result.subtitle)
             })
-            .then(() => Windows.Storage.CachedFileManager.completeUpdatesAsync(file));
+            .then(() => <Promise<Windows.Storage.Provider.FileUpdateStatus>><any>Windows.Storage.CachedFileManager.completeUpdatesAsync(file));
         //navigator.msSaveBlob(subtitleFile, subtitleFileDisplayName + ".vtt");
     }
 }
