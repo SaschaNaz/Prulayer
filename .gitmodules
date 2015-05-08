@@ -1,5 +1,5 @@
 [submodule "PrulayerUniversal/PrulayerUniversal.Shared/submodules/samits"]
-	path = PrulayerUniversal/PrulayerUniversal.Shared/submodules/samits
+	path = PrulayerUniversal.Windows10/submodules/samits
 	url = https://github.com/SaschaNaz/SamiTS.git
 [submodule "PrulayerUniversal.Windows10/submodules/gridlayout"]
 	path = PrulayerUniversal.Windows10/submodules/gridlayout

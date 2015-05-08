@@ -41,7 +41,7 @@
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <TypeScriptNoImplicitAny>true</TypeScriptNoImplicitAny>
-    <TypeScriptOutFile>prulayerapp.js</TypeScriptOutFile>
+    <TypeScriptOutFile>js/prulayerapp.js</TypeScriptOutFile>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup Condition="'$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0'">
@@ -70,6 +70,7 @@
     <Content Include="js\default.js" />
     <Content Include="css\default.css" />
     <Content Include="submodules\gridlayout\bin\css-polyfills.min.js" />
+    <Content Include="submodules\samits\sami.js" />
     <Content Include="WinJS\css\ui-dark.css" />
     <Content Include="WinJS\css\ui-light.css" />
     <Content Include="WinJS\fonts\Symbols.ttf" />
@@ -79,11 +80,13 @@
     <Content Include="WinJS\js\WinJS.intellisense-setup.js" />
     <None Include="PrulayerUniversal.Windows10_TemporaryKey.pfx" />
     <TypeScriptCompile Include="submodules\es6-promise.d.ts" />
+    <TypeScriptCompile Include="submodules\samits\sami.d.ts" />
+    <TypeScriptCompile Include="submodules\winjs-2.0.d.ts" />
+    <TypeScriptCompile Include="submodules\winrt.d.ts" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4a0dddb5-7a95-4fbf-97cc-616d07737a77}" />
   </ItemGroup>
-  <Import Project="..\PrulayerUniversal\PrulayerUniversal.Shared\PrulayerUniversal.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\$(WMSJSProjectDirectory)\Microsoft.VisualStudio.$(WMSJSProject).targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.jsproj.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.jsproj.targets')" />

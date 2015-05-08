@@ -17,7 +17,6 @@ Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		PrulayerUniversal\PrulayerUniversal.Shared\PrulayerUniversal.Shared.projitems*{b0a64f6f-05fa-4c94-acd9-0f5328a9f0bc}*SharedItemsImports = 5
 		PrulayerUniversal\PrulayerUniversal.Shared\PrulayerUniversal.Shared.projitems*{c52b170a-8bfb-4bfb-a96d-b99d79f887b4}*SharedItemsImports = 5
-		PrulayerUniversal\PrulayerUniversal.Shared\PrulayerUniversal.Shared.projitems*{8f6035b4-b3bd-4762-be8a-5f923e56318e}*SharedItemsImports = 5
 		PrulayerUniversal\PrulayerUniversal.Shared\PrulayerUniversal.Shared.projitems*{4de88e7f-ac6d-4f0b-a33a-975839af7a56}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

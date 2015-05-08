@@ -6,9 +6,6 @@
     <SharedGUID>4de88e7f-ac6d-4f0b-a33a-975839af7a56</SharedGUID>
   </PropertyGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="$(MSBuildThisFileDirectory)submodules\samits\sami.d.ts" />
-    <Content Include="$(MSBuildThisFileDirectory)submodules\samits\sami.js" />
-    <Content Include="$(MSBuildThisFileDirectory)submodules\promise\Promise.js" />
     <TypeScriptCompile Include="$(MSBuildThisFileDirectory)submodules\winjs-2.0.d.ts" />
     <TypeScriptCompile Include="$(MSBuildThisFileDirectory)submodules\winrt.d.ts" />
   </ItemGroup>
