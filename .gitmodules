@@ -1,9 +1,6 @@
 [submodule "PrulayerUniversal/PrulayerUniversal.Shared/submodules/samits"]
 	path = PrulayerUniversal/PrulayerUniversal.Shared/submodules/samits
 	url = https://github.com/SaschaNaz/SamiTS.git
-[submodule "prulayeruniversal.windows10/submodules/gridlayout"]
-	path = prulayeruniversal.windows10/submodules/gridlayout
-	url = https://github.com/FremyCompany/css-grid-polyfill.git
 [submodule "PrulayerUniversal.Windows10/submodules/gridlayout"]
 	path = PrulayerUniversal.Windows10/submodules/gridlayout
 	url = https://github.com/FremyCompany/css-grid-polyfill.git
