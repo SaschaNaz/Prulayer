@@ -1,6 +1,3 @@
-[submodule "PrulayerUniversal/PrulayerUniversal.Shared/js/promise"]
-	path = PrulayerUniversal/PrulayerUniversal.Shared/js/promise
-	url = https://github.com/taylorhakes/promise-polyfill.git
 [submodule "PrulayerUniversal/PrulayerUniversal.Shared/submodules/samits"]
 	path = PrulayerUniversal/PrulayerUniversal.Shared/submodules/samits
 	url = https://github.com/SaschaNaz/SamiTS.git
