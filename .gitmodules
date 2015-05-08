@@ -7,3 +7,6 @@
 [submodule "PrulayerUniversal/PrulayerUniversal.Shared/submodules/promise"]
 	path = PrulayerUniversal/PrulayerUniversal.Shared/submodules/promise
 	url = https://github.com/taylorhakes/promise-polyfill.git
+[submodule "prulayeruniversal.windows10/submodules/gridlayout"]
+	path = prulayeruniversal.windows10/submodules/gridlayout
+	url = https://github.com/FremyCompany/css-grid-polyfill.git
