@@ -10,3 +10,6 @@
 [submodule "PrulayerUniversal.Windows10/submodules/subclassj"]
 	path = PrulayerUniversal.Windows10/submodules/subclassj
 	url = https://github.com/SaschaNaz/SubclassJ.git
+[submodule "PrulayerUniversal.Windows10/submodules/domliner"]
+	path = PrulayerUniversal.Windows10/submodules/domliner
+	url = https://github.com/SaschaNaz/DOMLiner.git
