@@ -11,13 +11,17 @@
 
     <!-- submodule references -->
     <script src="/submodules/SamiTS/sami.js"></script>
-    <script src="/submodules/gridlayout/bin/css-polyfills.js"></script>
 
     <!-- PrulayerUniversal.Windows10 references -->
     <link href="/css/default.css" rel="stylesheet" />
     <script src="/js/default.js"></script>
 </head>
 <body>
-    <video class="main-video" id="mainVideoElement" controls="controls" />
+    <div class="start-screen" id="emptyStart">
+        <input id="startOpenButton" type="button" value="OPEN" />
+    </div>
+    <video class="main-video hidden" id="mainVideoElement" controls="controls" />
+
+    <script src="/submodules/gridlayout/bin/css-polyfills.min.js"></script>
 </body>
 </html>

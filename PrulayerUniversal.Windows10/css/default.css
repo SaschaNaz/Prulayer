@@ -1,7 +1,17 @@
 ﻿body {
+    display: grid;
+    grid-template: 1fr / 1fr;
+}
+
+.hidden {
+    display: none;
 }
 
 .main-video {
-    width: 100%;
-    height: 100%;
+}
+
+.start-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

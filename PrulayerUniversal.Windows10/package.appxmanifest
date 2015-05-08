@@ -32,8 +32,8 @@
       StartPage="default.html">
 
       <uap:VisualElements
-        DisplayName="PrulayerUniversal.Windows10"
-        Description="PrulayerUniversal.Windows10"
+        DisplayName="Prulayer"
+        Description="Prulayer"
         BackgroundColor="#464646"
         Square150x150Logo="images\Logo.png"
         Square44x44Logo="images\SmallLogo.png">

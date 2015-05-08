@@ -69,6 +69,7 @@
     <TypeScriptCompile Include="js\app.ts" />
     <Content Include="js\default.js" />
     <Content Include="css\default.css" />
+    <Content Include="submodules\eventpromise\eventpromise.js" />
     <Content Include="submodules\gridlayout\bin\css-polyfills.min.js" />
     <Content Include="submodules\samits\sami.js" />
     <Content Include="WinJS\css\ui-dark.css" />
@@ -79,7 +80,9 @@
     <Content Include="WinJS\js\WinJS.intellisense.js" />
     <Content Include="WinJS\js\WinJS.intellisense-setup.js" />
     <None Include="PrulayerUniversal.Windows10_TemporaryKey.pfx" />
+    <TypeScriptCompile Include="js\ondomready.ts" />
     <TypeScriptCompile Include="submodules\es6-promise.d.ts" />
+    <TypeScriptCompile Include="submodules\eventpromise\eventpromise.d.ts" />
     <TypeScriptCompile Include="submodules\samits\sami.d.ts" />
     <TypeScriptCompile Include="submodules\winjs-2.0.d.ts" />
     <TypeScriptCompile Include="submodules\winrt.d.ts" />

@@ -4,3 +4,6 @@
 [submodule "PrulayerUniversal.Windows10/submodules/gridlayout"]
 	path = PrulayerUniversal.Windows10/submodules/gridlayout
 	url = https://github.com/FremyCompany/css-grid-polyfill.git
+[submodule "PrulayerUniversal.Windows10/submodules/eventpromise"]
+	path = PrulayerUniversal.Windows10/submodules/eventpromise
+	url = https://github.com/SaschaNaz/EventPromise.git
