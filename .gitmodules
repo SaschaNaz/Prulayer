@@ -7,3 +7,6 @@
 [submodule "PrulayerUniversal.Windows10/submodules/eventpromise"]
 	path = PrulayerUniversal.Windows10/submodules/eventpromise
 	url = https://github.com/SaschaNaz/EventPromise.git
+[submodule "PrulayerUniversal.Windows10/submodules/subclassj"]
+	path = PrulayerUniversal.Windows10/submodules/subclassj
+	url = https://github.com/SaschaNaz/SubclassJ.git

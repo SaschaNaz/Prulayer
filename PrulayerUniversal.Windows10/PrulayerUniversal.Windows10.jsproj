@@ -72,6 +72,7 @@
     <Content Include="submodules\eventpromise\eventpromise.js" />
     <Content Include="submodules\gridlayout\bin\css-polyfills.min.js" />
     <Content Include="submodules\samits\sami.js" />
+    <Content Include="submodules\subclassj\subclassj.js" />
     <Content Include="WinJS\css\ui-dark.css" />
     <Content Include="WinJS\css\ui-light.css" />
     <Content Include="WinJS\fonts\Symbols.ttf" />
@@ -84,6 +85,7 @@
     <TypeScriptCompile Include="submodules\es6-promise.d.ts" />
     <TypeScriptCompile Include="submodules\eventpromise\eventpromise.d.ts" />
     <TypeScriptCompile Include="submodules\samits\sami.d.ts" />
+    <TypeScriptCompile Include="submodules\subclassj\subclassj.d.ts" />
     <TypeScriptCompile Include="submodules\winjs-2.0.d.ts" />
     <TypeScriptCompile Include="submodules\winrt.d.ts" />
   </ItemGroup>
