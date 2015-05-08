@@ -69,6 +69,7 @@
     <TypeScriptCompile Include="js\app.ts" />
     <Content Include="js\default.js" />
     <Content Include="css\default.css" />
+    <Content Include="submodules\gridlayout\bin\css-polyfills.min.js" />
     <Content Include="WinJS\css\ui-dark.css" />
     <Content Include="WinJS\css\ui-light.css" />
     <Content Include="WinJS\fonts\Symbols.ttf" />
@@ -77,6 +78,7 @@
     <Content Include="WinJS\js\WinJS.intellisense.js" />
     <Content Include="WinJS\js\WinJS.intellisense-setup.js" />
     <None Include="PrulayerUniversal.Windows10_TemporaryKey.pfx" />
+    <TypeScriptCompile Include="submodules\es6-promise.d.ts" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4a0dddb5-7a95-4fbf-97cc-616d07737a77}" />
