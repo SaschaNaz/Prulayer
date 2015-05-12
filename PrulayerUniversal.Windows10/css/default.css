@@ -1,10 +1,14 @@
 ﻿body {
-    display: -ms-grid;
-    -ms-grid-rows: 1fr;
-    -ms-grid-columns: 1fr;
+    display: grid;
+    grid-template: 1fr / 1fr;
+}
+
+.start-screen {
+    grid-area: 1 / 1;
 }
 
 .main-video {
+    grid-area: 1 / 1;
 }
 
 .start-screen {
