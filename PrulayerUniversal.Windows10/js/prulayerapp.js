@@ -1,4 +1,4 @@
-﻿var StorageFile = Windows.Storage.StorageFile;
+var StorageFile = Windows.Storage.StorageFile;
 var FileIO = Windows.Storage.FileIO;
 function fileLoad(files) {
     if (!files.length)
@@ -112,13 +112,13 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(function () {
     DOMTransform.register("prulayer-video", function (pruVideo) {
         var mainVideo = DOMLiner.element("video", { class: "main-video-element", id: "mainVideoElement" });
         var slider = DOMLiner.element("input", { type: "range" });
-        var statusDisplay = DOMLiner.element("div", { class: "video-status-display" });
+        var statusDisplay = DOMLiner.element("div", { class: "video-status-display hidden" }, "Testing");
         mainVideo.addEventListener("loadedmetadata", function () { return slider.max = mainVideo.duration.toString(); });
         mainVideo.addEventListener("timeupdate", function () { return slider.value = mainVideo.currentTime.toString(); });
         //mainVideo.ontimeupdate
         pruVideo.appendChild(mainVideo);
+        pruVideo.appendChild(statusDisplay);
         pruVideo.appendChild(DOMLiner.access(DOMLiner.element("div", { class: "video-element-cover" }, [
-            statusDisplay,
             DOMLiner.element("div", { class: "video-controller" }, [
                 DOMLiner.access(DOMLiner.element("span", null, "Play"), function (element) {
                     element.addEventListener("click", function () { return mainVideo.play(); });

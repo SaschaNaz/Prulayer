@@ -1,31 +1,60 @@
-﻿prulayer-video .video-element-cover {
-    overflow-y: scroll;
-    -ms-overflow-style: none;
-    width: 100%;
-    height: 100%;
-    position: relative;
-
-    -ms-scroll-snap-points-y: snapList(0%, 100%, 70px);
-    -ms-scroll-snap-type: mandatory;
+﻿prulayer-video {
+    display: -ms-grid;
+    -ms-grid-rows: 1fr;
+    -ms-grid-columns: 1fr;
+    /*
+        display: grid;
+        grid-template: 1fr / 1fr;
+    */
 }
 
-prulayer-video .video-controller {
-    position: relative;
-    top: 100%;
-    height: 70px;
-    background-color: black;
+    prulayer-video,
+    prulayer-video .main-video-element,
+    prulayer-video .video-element-cover {
+        -ms-grid-row: 1;
+        -ms-grid-column: 1;
+        /*
+        grid-area: 1 / 1;
+    */
+    }
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-    .video-controller span:hover {
-        color: gray;
+    prulayer-video .video-element-cover {
+        overflow-y: scroll;
+        -ms-overflow-style: none;
+        width: 100%;
+        height: 100%;
+        position: relative;
+        -ms-scroll-snap-points-y: snapList(0%, 100%, 70px);
+        -ms-scroll-snap-type: mandatory;
     }
-    .video-controller * {
-        text-transform: uppercase;
-        margin: 10px;
+
+    prulayer-video .video-controller {
+        position: relative;
+        top: 100%;
+        height: 70px;
+        background-color: black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
-    .video-controller input[type=range] {
-        flex: 3;
+        prulayer-video .video-controller span:hover {
+            color: gray;
+        }
+        prulayer-video .video-controller * {
+            text-transform: uppercase;
+            margin: 10px;
+        }
+        prulayer-video .video-controller input[type=range] {
+            flex: 3;
+        }
+
+    prulayer-video .video-status-display {
+        padding: 20px;
+        font-size: 30px;
+        color: #eee;
+        text-shadow: 0 0 5px #110000;
+    }
+
+    prulayer-video .hidden {
+        display: none;
     }

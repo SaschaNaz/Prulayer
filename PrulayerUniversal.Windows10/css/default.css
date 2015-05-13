@@ -1,6 +1,6 @@
 ﻿@import "prulayer-video.css";
 
-body, .main-video {
+body {
     display: -ms-grid;
     -ms-grid-rows: 1fr;
     -ms-grid-columns: 1fr;
@@ -10,7 +10,7 @@ body, .main-video {
     */
 }
 
-.start-screen, .main-video, .main-video-element, .video-element-cover {
+.start-screen {
     -ms-grid-row: 1;
     -ms-grid-column: 1;
     /*

@@ -38,16 +38,16 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
     DOMTransform.register("prulayer-video", (pruVideo) => {
         let mainVideo = <HTMLVideoElement>DOMLiner.element("video", { class: "main-video-element", id: "mainVideoElement" });
         let slider = <HTMLInputElement>DOMLiner.element("input", { type: "range" });
-        let statusDisplay = <HTMLDivElement>DOMLiner.element("div", { class: "video-status-display" })
+        let statusDisplay = <HTMLDivElement>DOMLiner.element("div", { class: "video-status-display hidden" }, "Testing")
 
         mainVideo.addEventListener("loadedmetadata", () => slider.max = mainVideo.duration.toString());
         mainVideo.addEventListener("timeupdate", () => slider.value = mainVideo.currentTime.toString());
         //mainVideo.ontimeupdate
 
         pruVideo.appendChild(mainVideo);
+        pruVideo.appendChild(statusDisplay);
         pruVideo.appendChild(
             DOMLiner.access(DOMLiner.element("div", { class: "video-element-cover" }, [
-                statusDisplay,
                 DOMLiner.element("div", { class: "video-controller" }, [
                     DOMLiner.access(DOMLiner.element("span", null, "Play"), (element) => {
                         element.addEventListener("click", () => mainVideo.play());
