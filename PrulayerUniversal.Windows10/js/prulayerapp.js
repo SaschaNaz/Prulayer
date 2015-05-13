@@ -63,28 +63,51 @@ function loadSubtitle(result) {
 var DOMTransform;
 (function (DOMTransform) {
     var dictionary = {};
-    function register(tagName, transformer) {
-        dictionary[tagName.toLowerCase()] = transformer;
+    function register(tagName, process) {
+        dictionary[tagName.toLowerCase()] = { process: process };
     }
     DOMTransform.register = register;
-    function construct(tagName) {
-        tagName = tagName.toLowerCase();
-        var element = document.createElement(tagName);
-        dictionary[tagName](element);
+    function registerAsExtension(extensionName, base, process) {
+        base = base.toLowerCase();
+        dictionary[extensionName.toLowerCase()] = { process: process, base: base };
+    }
+    DOMTransform.registerAsExtension = registerAsExtension;
+    function construct(registeredName) {
+        registeredName = registeredName.toLowerCase();
+        var transformer = dictionary[registeredName];
+        var element = document.createElement(transformer.base || registeredName);
+        transformer.process(element);
         return element;
     }
     DOMTransform.construct = construct;
-    function transform(unknownElement) {
-        if (unknownElement instanceof Element) {
-            var transformer = dictionary[unknownElement.tagName.toLowerCase()];
+    function transform(blankElement) {
+        if (blankElement instanceof Element) {
+            var tagName = blankElement.tagName.toLowerCase();
+            var transformer = dictionary[tagName];
             if (!transformer)
-                throw new Error("No transformer is registered to treat " + unknownElement.tagName);
-            transformer(unknownElement);
-            return unknownElement;
+                throw new Error("No transformer is registered to treat " + tagName);
+            transformer.process(blankElement);
+            return blankElement;
         }
         throw new Error("The input is not an Element.");
     }
     DOMTransform.transform = transform;
+    function extend(baseElement, extensionName) {
+        if (baseElement instanceof Element) {
+            extensionName = extensionName.toLowerCase();
+            var transformer = dictionary[extensionName];
+            if (!transformer)
+                throw new Error("No transformer is registered to treat " + extensionName);
+            // base coincidence check
+            var baseTagName = baseElement.tagName.toLowerCase();
+            if (transformer.base !== baseTagName)
+                throw new Error("The input base element is not instance of " + baseTagName);
+            transformer.process(baseElement);
+            return baseElement;
+        }
+        throw new Error("The input is not an Element.");
+    }
+    DOMTransform.extend = extend;
 })(DOMTransform || (DOMTransform = {}));
 EventPromise.waitEvent(window, "DOMContentLoaded").then(function () {
     EventPromise.subscribeEvent(startOpenButton, "click", function (ev, contract) {
@@ -138,6 +161,9 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(function () {
                     mainVideo.pause();
             });
         }));
+    });
+    DOMTransform.register("user-slider", function (userSlider) {
+        userSlider;
     });
     // <prulayer-video> element construction
     for (var _i = 0, _a = Array.from(document.getElementsByTagName("prulayer-video")); _i < _a.length; _i++) {

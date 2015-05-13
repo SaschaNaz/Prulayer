@@ -70,6 +70,10 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
             );
     });
 
+    DOMTransform.register("user-slider", (userSlider) => {
+        userSlider
+    });
+
 
     // <prulayer-video> element construction
     for (let pruVideo of Array.from(document.getElementsByTagName("prulayer-video")))
