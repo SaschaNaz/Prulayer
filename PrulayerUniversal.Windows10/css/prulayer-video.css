@@ -44,7 +44,7 @@
             text-transform: uppercase;
             margin: 10px;
         }
-        prulayer-video .video-controller input[type=range] {
+        prulayer-video .video-controller .time-slider {
             flex: 3;
         }
 

@@ -37,7 +37,7 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
 
     DOMTransform.register("prulayer-video", (pruVideo) => {
         let mainVideo = <HTMLVideoElement>DOMLiner.element("video", { class: "main-video-element", id: "mainVideoElement" });
-        let slider = <HTMLInputElement>DOMLiner.element("input", { type: "range" });
+        let slider = <HTMLInputElement>DOMLiner.element("input", { class: "time-slider", type: "range" });
         let statusDisplay = <HTMLDivElement>DOMLiner.element("div", { class: "video-status-display hidden" }, "Testing")
 
         mainVideo.addEventListener("loadedmetadata", () => slider.max = mainVideo.duration.toString());
