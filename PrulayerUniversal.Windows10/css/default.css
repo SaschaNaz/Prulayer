@@ -1,28 +1,21 @@
-﻿body {
-    display: grid;
-    grid-template: 1fr / 1fr;
+﻿@import "prulayer-video.css";
+
+body, .main-video {
+    display: -ms-grid;
+    -ms-grid-rows: 1fr;
+    -ms-grid-columns: 1fr;
+    /*
+        display: grid;
+        grid-template: 1fr / 1fr;
+    */
 }
 
-.start-screen, .main-video, .video-element-cover {
-    grid-area: 1 / 1;
-}
-
-.video-element-cover {
-    overflow-y: scroll;
-    -ms-overflow-style: none;
-    width: 100%;
-    height: 100%;
-    position: relative;
-
-    -ms-scroll-snap-points-y: snapList(0%, 100%, 200px);
-    -ms-scroll-snap-type: mandatory;
-}
-
-.video-controller {
-    position: relative;
-    top: 100%;
-    height: 200px;
-    background-color: aquamarine;
+.start-screen, .main-video, .main-video-element, .video-element-cover {
+    -ms-grid-row: 1;
+    -ms-grid-column: 1;
+    /*
+        grid-area: 1 / 1;
+    */
 }
 
 .start-screen {
