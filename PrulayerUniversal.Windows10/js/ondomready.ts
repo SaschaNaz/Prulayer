@@ -43,7 +43,7 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
 
     DOMTransform.register("prulayer-video", (pruVideo: PrulayerVideoElement) => {
         let mainVideo = <HTMLVideoElement>DOMLiner.element("video", { class: "main-video-element", id: "mainVideoElement" });
-        let slider = <UserSliderElement>DOMTransform.extend(DOMLiner.element("input", { class: "time-slider", type: "range" }), "user-slider");
+        let slider = <UserSliderElement>DOMTransform.extend(DOMLiner.element("input", { class: "time-slider", type: "range", step: 5 }), "user-slider");
         let statusDisplay = <HTMLDivElement>DOMLiner.element("div", { class: "video-status-display hidden" }, "Testing")
 
         mainVideo.addEventListener("loadedmetadata", () => slider.max = mainVideo.duration.toString());
@@ -96,6 +96,27 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
                     }, 3000);
                 };
 
+                mainVideo.addEventListener("seeked", () => displayText(`Time: ${mainVideo.currentTime}`));
+
+                videoElementCover.addEventListener("keydown", (ev) => {
+                    if (ev.metaKey || ev.ctrlKey || ev.altKey || ev.shiftKey)
+                        return;
+                    if (ev.target !== videoElementCover)
+                        return;
+                    switch (ev.key) {
+                        case "Left":
+                        case "ArrowLeft":
+                            mainVideo.currentTime -= 5;
+                            break;
+                        case "Right":
+                        case "ArrowRight":
+                            mainVideo.currentTime += 5;
+                            break;
+                        default:
+                            return;
+                    }
+                });
+
                 videoElementCover.addEventListener("wheel", (ev) => {
                     // minus value: control off
                     // plus value: control on
@@ -133,8 +154,6 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
                     // navigation by mouse movement
                     mainVideo.pause();
                     mainVideo.currentTime = prevTime + difference / mainVideo.clientHeight * 10;
-
-                    displayText(`Time: ${mainVideo.currentTime}`);
                 });
                 videoElementCover.addEventListener("pointerup", (ev) => {
                     if (prevPointerX == null)

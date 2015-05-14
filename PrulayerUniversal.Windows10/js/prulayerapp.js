@@ -134,7 +134,7 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(function () {
     });
     DOMTransform.register("prulayer-video", function (pruVideo) {
         var mainVideo = DOMLiner.element("video", { class: "main-video-element", id: "mainVideoElement" });
-        var slider = DOMTransform.extend(DOMLiner.element("input", { class: "time-slider", type: "range" }), "user-slider");
+        var slider = DOMTransform.extend(DOMLiner.element("input", { class: "time-slider", type: "range", step: 5 }), "user-slider");
         var statusDisplay = DOMLiner.element("div", { class: "video-status-display hidden" }, "Testing");
         mainVideo.addEventListener("loadedmetadata", function () { return slider.max = mainVideo.duration.toString(); });
         mainVideo.addEventListener("timeupdate", function () { return slider.value = mainVideo.currentTime.toString(); });
@@ -179,6 +179,25 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(function () {
                     statusDisplay.classList.add("hidden");
                 }, 3000);
             };
+            mainVideo.addEventListener("seeked", function () { return displayText("Time: " + mainVideo.currentTime); });
+            videoElementCover.addEventListener("keydown", function (ev) {
+                if (ev.metaKey || ev.ctrlKey || ev.altKey || ev.shiftKey)
+                    return;
+                if (ev.target !== videoElementCover)
+                    return;
+                switch (ev.key) {
+                    case "Left":
+                    case "ArrowLeft":
+                        mainVideo.currentTime -= 5;
+                        break;
+                    case "Right":
+                    case "ArrowRight":
+                        mainVideo.currentTime += 5;
+                        break;
+                    default:
+                        return;
+                }
+            });
             videoElementCover.addEventListener("wheel", function (ev) {
                 // minus value: control off
                 // plus value: control on
@@ -210,7 +229,6 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(function () {
                 // navigation by mouse movement
                 mainVideo.pause();
                 mainVideo.currentTime = prevTime + difference / mainVideo.clientHeight * 10;
-                displayText("Time: " + mainVideo.currentTime);
             });
             videoElementCover.addEventListener("pointerup", function (ev) {
                 if (prevPointerX == null)
