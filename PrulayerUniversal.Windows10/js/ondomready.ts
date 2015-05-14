@@ -68,13 +68,64 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
                     slider
                 ])
             ]), (videoElementCover) => {
-                videoElementCover.addEventListener("click", (ev) => {
+                // physical distance
+                let isClick = (moveX: number) => (Math.abs(moveX) / screen.deviceXDPI < 0.04);
+
+                let wasPaused = false;
+                let prevPointerX: number = null;
+                let prevTime: number = null;
+
+                //videoElementCover.addEventListener("click", (ev) => {
+                //    if (ev.target !== videoElementCover)
+                //        return;
+                //    if (mainVideo.paused)
+                //        mainVideo.play();
+                //    else
+                //        mainVideo.pause();
+                //});
+
+                videoElementCover.addEventListener("pointerdown", (ev) => {
                     if (ev.target !== videoElementCover)
                         return;
-                    if (mainVideo.paused)
-                        mainVideo.play();
-                    else
+
+                    if (mainVideo.readyState === 4 && ev.button === 0) {
+                        videoElementCover.setPointerCapture(ev.pointerId);
+                        prevPointerX = ev.offsetX;
+                        prevTime = mainVideo.currentTime;
+                        wasPaused = mainVideo.paused;
+
                         mainVideo.pause();
+                    }
+                });
+                videoElementCover.addEventListener("pointermove", (ev) => {
+                    // TODO: process cursor style
+
+                    // previous pointerdown check
+                    if (prevPointerX == null)
+                        return;
+
+                    // non-click movement check
+                    let difference = prevPointerX - ev.offsetX;
+                    if (isClick(difference))
+                        return;
+                    
+                    // navigation by mouse movement
+                    mainVideo.pause();
+                    mainVideo.currentTime = prevTime + difference / mainVideo.clientHeight * 10;
+                });
+                videoElementCover.addEventListener("pointerup", (ev) => {
+                    if (prevPointerX == null)
+                        return;
+
+                    if (isClick(prevPointerX - ev.offsetX)) {
+                        if (wasPaused)
+                            mainVideo.play();
+                        else
+                            mainVideo.pause();
+                    }
+
+                    prevPointerX = prevTime = null;
+                    wasPaused = false;
                 });
             })
             );
