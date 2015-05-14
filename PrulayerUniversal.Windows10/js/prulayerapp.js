@@ -1,4 +1,4 @@
-﻿var StorageFile = Windows.Storage.StorageFile;
+var StorageFile = Windows.Storage.StorageFile;
 var FileIO = Windows.Storage.FileIO;
 function fileLoad(files) {
     if (!files.length)
@@ -168,14 +168,17 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(function () {
             var wasPaused = false;
             var prevPointerX = null;
             var prevTime = null;
-            //videoElementCover.addEventListener("click", (ev) => {
-            //    if (ev.target !== videoElementCover)
-            //        return;
-            //    if (mainVideo.paused)
-            //        mainVideo.play();
-            //    else
-            //        mainVideo.pause();
-            //});
+            var displayTimerId;
+            var displayText = function (text) {
+                if (displayTimerId)
+                    clearTimeout(displayTimerId);
+                statusDisplay.textContent = text;
+                statusDisplay.classList.remove("hidden");
+                displayTimerId = setTimeout(function () {
+                    statusDisplay.textContent = "";
+                    statusDisplay.classList.add("hidden");
+                }, 3000);
+            };
             videoElementCover.addEventListener("wheel", function (ev) {
                 // minus value: control off
                 // plus value: control on
@@ -207,6 +210,7 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(function () {
                 // navigation by mouse movement
                 mainVideo.pause();
                 mainVideo.currentTime = prevTime + difference / mainVideo.clientHeight * 10;
+                displayText("Time: " + mainVideo.currentTime);
             });
             videoElementCover.addEventListener("pointerup", function (ev) {
                 if (prevPointerX == null)

@@ -83,14 +83,18 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
                 let prevPointerX: number = null;
                 let prevTime: number = null;
 
-                //videoElementCover.addEventListener("click", (ev) => {
-                //    if (ev.target !== videoElementCover)
-                //        return;
-                //    if (mainVideo.paused)
-                //        mainVideo.play();
-                //    else
-                //        mainVideo.pause();
-                //});
+                let displayTimerId: number;
+                let displayText = (text: string) => {
+                    if (displayTimerId)
+                        clearTimeout(displayTimerId);
+                    statusDisplay.textContent = text;
+                    statusDisplay.classList.remove("hidden");
+
+                    displayTimerId = setTimeout(() => {
+                        statusDisplay.textContent = "";
+                        statusDisplay.classList.add("hidden");
+                    }, 3000);
+                };
 
                 videoElementCover.addEventListener("wheel", (ev) => {
                     // minus value: control off
@@ -129,6 +133,8 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
                     // navigation by mouse movement
                     mainVideo.pause();
                     mainVideo.currentTime = prevTime + difference / mainVideo.clientHeight * 10;
+
+                    displayText(`Time: ${mainVideo.currentTime}`);
                 });
                 videoElementCover.addEventListener("pointerup", (ev) => {
                     if (prevPointerX == null)
