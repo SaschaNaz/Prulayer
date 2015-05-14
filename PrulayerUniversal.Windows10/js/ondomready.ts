@@ -41,6 +41,18 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
         });
     })
 
+    EventPromise.subscribeEvent<KeyboardEvent>(window, "keydown", (ev, contract) => {
+        if (ev.key !== "F11")
+            return;
+        let view = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
+        
+        if ((<any>view).isFullScreen)
+            (<any>view).exitFullScreenMode();
+        else
+            (<any>view).tryEnterFullScreenMode();
+    });
+
+
     DOMTransform.register("prulayer-video", (pruVideo: PrulayerVideoElement) => {
         let mainVideo = <HTMLVideoElement>DOMLiner.element("video", { class: "main-video-element", id: "mainVideoElement" });
         let slider = <UserSliderElement>DOMTransform.extend(DOMLiner.element("input", { class: "time-slider", type: "range", step: 5 }), "user-slider");

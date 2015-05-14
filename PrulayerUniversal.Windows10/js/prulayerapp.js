@@ -132,6 +132,15 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(function () {
             fileLoad(files);
         });
     });
+    EventPromise.subscribeEvent(window, "keydown", function (ev, contract) {
+        if (ev.key !== "F11")
+            return;
+        var view = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
+        if (view.isFullScreen)
+            view.exitFullScreenMode();
+        else
+            view.tryEnterFullScreenMode();
+    });
     DOMTransform.register("prulayer-video", function (pruVideo) {
         var mainVideo = DOMLiner.element("video", { class: "main-video-element", id: "mainVideoElement" });
         var slider = DOMTransform.extend(DOMLiner.element("input", { class: "time-slider", type: "range", step: 5 }), "user-slider");
