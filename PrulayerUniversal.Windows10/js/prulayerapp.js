@@ -144,7 +144,7 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(function () {
         //mainVideo.ontimeupdate
         pruVideo.appendChild(mainVideo);
         pruVideo.appendChild(statusDisplay);
-        pruVideo.appendChild(DOMLiner.access(DOMLiner.element("div", { class: "video-element-cover" }, [
+        pruVideo.appendChild(DOMLiner.access(DOMLiner.element("div", { class: "video-element-cover", style: "cursor: none" }, [
             DOMLiner.element("div", { class: "video-controller" }, [
                 DOMLiner.access(DOMLiner.element("span", null, "Play"), function (element) {
                     element.addEventListener("click", function () { return mainVideo.play(); });
@@ -157,6 +157,14 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(function () {
         ]), function (videoElementCover) {
             // physical distance
             var isClick = function (moveX) { return (Math.abs(moveX) / screen.deviceXDPI < 0.04); };
+            // mouse cursor timer id
+            var cursorTimerId;
+            var cursorOn = function () {
+                videoElementCover.style.cursor = "auto";
+                if (cursorTimerId)
+                    clearTimeout(cursorTimerId);
+                cursorTimerId = setTimeout(function () { return videoElementCover.style.cursor = "none"; }, 3000);
+            };
             var wasPaused = false;
             var prevPointerX = null;
             var prevTime = null;
@@ -168,6 +176,14 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(function () {
             //    else
             //        mainVideo.pause();
             //});
+            videoElementCover.addEventListener("wheel", function (ev) {
+                // minus value: control off
+                // plus value: control on
+                if (ev.deltaY > 0)
+                    videoElementCover.style.cursor = "auto";
+                else if (ev.deltaY < 0)
+                    videoElementCover.style.cursor = "none";
+            });
             videoElementCover.addEventListener("pointerdown", function (ev) {
                 if (ev.target !== videoElementCover)
                     return;
@@ -180,7 +196,7 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(function () {
                 }
             });
             videoElementCover.addEventListener("pointermove", function (ev) {
-                // TODO: process cursor style
+                cursorOn();
                 // previous pointerdown check
                 if (prevPointerX == null)
                     return;
