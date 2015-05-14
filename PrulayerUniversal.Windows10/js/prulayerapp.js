@@ -134,10 +134,13 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(function () {
     });
     DOMTransform.register("prulayer-video", function (pruVideo) {
         var mainVideo = DOMLiner.element("video", { class: "main-video-element", id: "mainVideoElement" });
-        var slider = DOMLiner.element("input", { class: "time-slider", type: "range" });
+        var slider = DOMTransform.extend(DOMLiner.element("input", { class: "time-slider", type: "range" }), "user-slider");
         var statusDisplay = DOMLiner.element("div", { class: "video-status-display hidden" }, "Testing");
         mainVideo.addEventListener("loadedmetadata", function () { return slider.max = mainVideo.duration.toString(); });
         mainVideo.addEventListener("timeupdate", function () { return slider.value = mainVideo.currentTime.toString(); });
+        slider.addEventListener("userinput", function () { return mainVideo.currentTime = slider.valueAsNumber; });
+        slider.addEventListener("pointerdown", function () { return mainVideo.pause(); });
+        slider.addEventListener("keydown", function () { return mainVideo.pause(); });
         //mainVideo.ontimeupdate
         pruVideo.appendChild(mainVideo);
         pruVideo.appendChild(statusDisplay);
@@ -162,8 +165,18 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(function () {
             });
         }));
     });
-    DOMTransform.register("user-slider", function (userSlider) {
-        userSlider;
+    DOMTransform.registerAsExtension("user-slider", "input", function (userSlider) {
+        userSlider.userEditMode = false;
+        var enableUserEditMode = function () { userSlider.userEditMode = true; console.log(userSlider.userEditMode); };
+        var disableUserEditMode = function () { userSlider.userEditMode = false; console.log(userSlider.userEditMode); };
+        userSlider.addEventListener("pointerdown", enableUserEditMode);
+        userSlider.addEventListener("pointerup", disableUserEditMode);
+        userSlider.addEventListener("keydown", enableUserEditMode);
+        userSlider.addEventListener("keyup", disableUserEditMode);
+        userSlider.addEventListener("input", function (ev) {
+            if (userSlider.userEditMode)
+                userSlider.dispatchEvent(new Event("userinput"));
+        });
     });
     // <prulayer-video> element construction
     for (var _i = 0, _a = Array.from(document.getElementsByTagName("prulayer-video")); _i < _a.length; _i++) {

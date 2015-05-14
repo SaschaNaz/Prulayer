@@ -3,6 +3,12 @@ declare var startOpenButton: HTMLInputElement;
 declare var mainVideo: HTMLDivElement;
 declare var mainVideoElement: HTMLVideoElement;
 
+interface PrulayerVideoElement extends HTMLElement {
+}
+interface UserSliderElement extends HTMLInputElement {
+    userEditMode: boolean;
+}
+
 EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
     EventPromise.subscribeEvent(startOpenButton, "click", (ev, contract) => {
         //let input = document.createElement("input");
@@ -35,13 +41,17 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
         });
     })
 
-    DOMTransform.register("prulayer-video", (pruVideo) => {
+    DOMTransform.register("prulayer-video", (pruVideo: PrulayerVideoElement) => {
         let mainVideo = <HTMLVideoElement>DOMLiner.element("video", { class: "main-video-element", id: "mainVideoElement" });
-        let slider = <HTMLInputElement>DOMLiner.element("input", { class: "time-slider", type: "range" });
+        let slider = <UserSliderElement>DOMTransform.extend(DOMLiner.element("input", { class: "time-slider", type: "range" }), "user-slider");
         let statusDisplay = <HTMLDivElement>DOMLiner.element("div", { class: "video-status-display hidden" }, "Testing")
 
         mainVideo.addEventListener("loadedmetadata", () => slider.max = mainVideo.duration.toString());
         mainVideo.addEventListener("timeupdate", () => slider.value = mainVideo.currentTime.toString());
+        slider.addEventListener("userinput", () => mainVideo.currentTime = slider.valueAsNumber);
+        
+        slider.addEventListener("pointerdown", () => mainVideo.pause());
+        slider.addEventListener("keydown", () => mainVideo.pause());
         //mainVideo.ontimeupdate
 
         pruVideo.appendChild(mainVideo);
@@ -70,8 +80,20 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
             );
     });
 
-    DOMTransform.register("user-slider", (userSlider) => {
-        userSlider
+    DOMTransform.registerAsExtension("user-slider", "input", (userSlider: UserSliderElement) => {
+        userSlider.userEditMode = false;
+        let enableUserEditMode = () => { userSlider.userEditMode = true; console.log(userSlider.userEditMode) }
+        let disableUserEditMode = () => { userSlider.userEditMode = false; console.log(userSlider.userEditMode) }
+
+        userSlider.addEventListener("pointerdown", enableUserEditMode);
+        userSlider.addEventListener("pointerup", disableUserEditMode);
+        userSlider.addEventListener("keydown", enableUserEditMode);
+        userSlider.addEventListener("keyup", disableUserEditMode);
+
+        userSlider.addEventListener("input", (ev) => {
+            if (userSlider.userEditMode)
+                userSlider.dispatchEvent(new Event("userinput"));
+        })
     });
 
 
