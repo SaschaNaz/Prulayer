@@ -1,4 +1,4 @@
-﻿var StorageFile = Windows.Storage.StorageFile;
+var StorageFile = Windows.Storage.StorageFile;
 var FileIO = Windows.Storage.FileIO;
 function fileLoad(files) {
     if (!files.length)
@@ -57,7 +57,8 @@ function loadSubtitle(result) {
     mainVideoElement.appendChild(DOMLiner.element("track", {
         kind: 'subtitles',
         src: URL.createObjectURL(blob, { oneTimeOnly: true }),
-        default: true
+        default: true,
+        "prop-mediator": { delay: function (milliseconds) { } }
     }));
 }
 var DOMTransform;
@@ -150,11 +151,11 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(function () {
         slider.addEventListener("userinput", function () { return mainVideo.currentTime = slider.valueAsNumber; });
         slider.addEventListener("pointerdown", function () { return mainVideo.pause(); });
         slider.addEventListener("keydown", function () { return mainVideo.pause(); });
-        var subtitleDelay;
+        var subtitleDelay = 0;
         Object.defineProperty(pruVideo, "subtitleDelay", {
             get: function () { return subtitleDelay; },
             set: function (value) {
-                if (subtitleDelay === value)
+                if (subtitleDelay === value || isNaN(value))
                     return;
                 for (var _i = 0, _a = Array.from(mainVideo.children); _i < _a.length; _i++) {
                     var child = _a[_i];
@@ -207,20 +208,33 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(function () {
                 }, 3000);
             };
             mainVideo.addEventListener("seeked", function () { return displayText("Time: " + mainVideo.currentTime); });
+            pruVideo.addEventListener("subtitledelayupdated", function () { return displayText("Subtitle Delay: " + (pruVideo.subtitleDelay / 1000).toFixed(2)); });
             videoElementCover.addEventListener("keydown", function (ev) {
-                if (ev.metaKey || ev.ctrlKey || ev.altKey || ev.shiftKey)
-                    return;
                 if (ev.target !== videoElementCover)
+                    return;
+                if (ev.ctrlKey) {
+                    switch (ev.keyCode) {
+                        case 188:
+                            pruVideo.subtitleDelay -= 100;
+                            return;
+                        case 190:
+                            pruVideo.subtitleDelay += 100;
+                            return;
+                        default:
+                            return;
+                    }
+                }
+                if (ev.metaKey || ev.ctrlKey || ev.altKey || ev.shiftKey)
                     return;
                 switch (ev.key) {
                     case "Left":
                     case "ArrowLeft":
                         mainVideo.currentTime -= 5;
-                        break;
+                        return;
                     case "Right":
                     case "ArrowRight":
                         mainVideo.currentTime += 5;
-                        break;
+                        return;
                     default:
                         return;
                 }

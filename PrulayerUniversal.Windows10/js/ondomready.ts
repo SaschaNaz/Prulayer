@@ -13,7 +13,7 @@ interface HTMLTrackElementWithMediator extends HTMLTrackElement {
     mediator: TextTrackMediator;
 }
 interface TextTrackMediator {
-    delay(second: number): void;
+    delay(milliseconds: number): void;
 }
 
 EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
@@ -72,11 +72,11 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
         slider.addEventListener("pointerdown", () => mainVideo.pause());
         slider.addEventListener("keydown", () => mainVideo.pause());
 
-        let subtitleDelay: number;
+        let subtitleDelay = 0;
         Object.defineProperty(pruVideo, "subtitleDelay", {
             get: () => subtitleDelay,
             set: (value: number) => {
-                if (subtitleDelay === value)
+                if (subtitleDelay === value || isNaN(value))
                     return;
 
                 for (let child of Array.from(mainVideo.children)) {
@@ -137,21 +137,37 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
                 };
 
                 mainVideo.addEventListener("seeked", () => displayText(`Time: ${mainVideo.currentTime}`));
+                pruVideo.addEventListener("subtitledelayupdated", () => displayText(`Subtitle Delay: ${(pruVideo.subtitleDelay / 1000).toFixed(2)}`));
 
                 videoElementCover.addEventListener("keydown", (ev) => {
-                    if (ev.metaKey || ev.ctrlKey || ev.altKey || ev.shiftKey)
-                        return;
                     if (ev.target !== videoElementCover)
                         return;
+
+                    if (ev.ctrlKey) {
+                        switch (ev.keyCode) {
+                            case 188:
+                                pruVideo.subtitleDelay -= 100;
+                                return;
+                            case 190:
+                                pruVideo.subtitleDelay += 100;
+                                return;
+                            default:
+                                return;
+                        }
+                    }
+                    
+                    if (ev.metaKey || ev.ctrlKey || ev.altKey || ev.shiftKey)
+                        return;
+
                     switch (ev.key) {
                         case "Left":
                         case "ArrowLeft":
                             mainVideo.currentTime -= 5;
-                            break;
+                            return;
                         case "Right":
                         case "ArrowRight":
                             mainVideo.currentTime += 5;
-                            break;
+                            return;
                         default:
                             return;
                     }

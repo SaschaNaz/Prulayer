@@ -61,6 +61,8 @@ function loadSubtitle(result: any) {
     mainVideoElement.appendChild(DOMLiner.element("track", {
         kind: 'subtitles',
         src: URL.createObjectURL(blob, { oneTimeOnly: true }),
-        default: true
+        default: true,
+
+        "prop-mediator": { delay(milliseconds: number) { } }
     }));
 }
