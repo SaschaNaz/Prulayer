@@ -1,4 +1,4 @@
-var StorageFile = Windows.Storage.StorageFile;
+﻿var StorageFile = Windows.Storage.StorageFile;
 var FileIO = Windows.Storage.FileIO;
 function fileLoad(files) {
     if (!files.length)
@@ -150,7 +150,25 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(function () {
         slider.addEventListener("userinput", function () { return mainVideo.currentTime = slider.valueAsNumber; });
         slider.addEventListener("pointerdown", function () { return mainVideo.pause(); });
         slider.addEventListener("keydown", function () { return mainVideo.pause(); });
-        //mainVideo.ontimeupdate
+        var subtitleDelay;
+        Object.defineProperty(pruVideo, "subtitleDelay", {
+            get: function () { return subtitleDelay; },
+            set: function (value) {
+                if (subtitleDelay === value)
+                    return;
+                for (var _i = 0, _a = Array.from(mainVideo.children); _i < _a.length; _i++) {
+                    var child = _a[_i];
+                    if (child instanceof HTMLTrackElement) {
+                        var mediator = child.mediator;
+                        if (!mediator)
+                            return;
+                        mediator.delay(value);
+                    }
+                }
+                subtitleDelay = value;
+                pruVideo.dispatchEvent(new CustomEvent("subtitledelayupdated")); // for display 
+            }
+        });
         pruVideo.appendChild(mainVideo);
         pruVideo.appendChild(statusDisplay);
         pruVideo.appendChild(DOMLiner.access(DOMLiner.element("div", { class: "video-element-cover", style: "cursor: none" }, [

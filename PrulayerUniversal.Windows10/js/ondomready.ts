@@ -4,9 +4,16 @@ declare var mainVideo: HTMLDivElement;
 declare var mainVideoElement: HTMLVideoElement;
 
 interface PrulayerVideoElement extends HTMLElement {
+    subtitleDelay: number;
 }
 interface UserSliderElement extends HTMLInputElement {
     userEditMode: boolean;
+}
+interface HTMLTrackElementWithMediator extends HTMLTrackElement {
+    mediator: TextTrackMediator;
+}
+interface TextTrackMediator {
+    delay(second: number): void;
 }
 
 EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
@@ -64,7 +71,28 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
         
         slider.addEventListener("pointerdown", () => mainVideo.pause());
         slider.addEventListener("keydown", () => mainVideo.pause());
-        //mainVideo.ontimeupdate
+
+        let subtitleDelay: number;
+        Object.defineProperty(pruVideo, "subtitleDelay", {
+            get: () => subtitleDelay,
+            set: (value: number) => {
+                if (subtitleDelay === value)
+                    return;
+
+                for (let child of Array.from(mainVideo.children)) {
+                    if (child instanceof HTMLTrackElement) {
+                        let {mediator} = <HTMLTrackElementWithMediator>child;
+                        if (!mediator)
+                            return;
+
+                        mediator.delay(value);
+                    }
+                }
+
+                subtitleDelay = value;
+                pruVideo.dispatchEvent(new CustomEvent("subtitledelayupdated")); // for display 
+            }
+        });
 
         pruVideo.appendChild(mainVideo);
         pruVideo.appendChild(statusDisplay);
