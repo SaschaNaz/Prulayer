@@ -4,7 +4,15 @@ declare var mainVideo: HTMLDivElement;
 declare var mainVideoElement: HTMLVideoElement;
 
 interface PrulayerVideoElement extends HTMLElement {
-    subtitleDelay: number;
+    textTrackDelay: number;
+    tracks: TextTrackInformation[];
+}
+interface TextTrackInformation {
+    kind: string;
+    src: string;
+    default: boolean;
+    label: string;
+    srclang: string;
 }
 interface UserSliderElement extends HTMLInputElement {
     userEditMode: boolean;
@@ -72,11 +80,11 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
         slider.addEventListener("pointerdown", () => mainVideo.pause());
         slider.addEventListener("keydown", () => mainVideo.pause());
 
-        let subtitleDelay = 0;
-        Object.defineProperty(pruVideo, "subtitleDelay", {
-            get: () => subtitleDelay,
+        let textTrackDelay = 0;
+        Object.defineProperty(pruVideo, "textTrackDelay", {
+            get: () => textTrackDelay,
             set: (value: number) => {
-                if (subtitleDelay === value || isNaN(value))
+                if (textTrackDelay === value || isNaN(value))
                     return;
 
                 for (let child of Array.from(mainVideo.children)) {
@@ -89,8 +97,8 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
                     }
                 }
 
-                subtitleDelay = value;
-                pruVideo.dispatchEvent(new CustomEvent("subtitledelayupdated")); // for display 
+                textTrackDelay = value;
+                pruVideo.dispatchEvent(new CustomEvent("texttrackdelayupdated")); // for display 
             }
         });
 
@@ -137,7 +145,7 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
                 };
 
                 mainVideo.addEventListener("seeked", () => displayText(`Time: ${mainVideo.currentTime}`));
-                pruVideo.addEventListener("subtitledelayupdated", () => displayText(`Subtitle Delay: ${(pruVideo.subtitleDelay / 1000).toFixed(2)}`));
+                pruVideo.addEventListener("texttrackdelayupdated", () => displayText(`Text Track Delay: ${(pruVideo.textTrackDelay / 1000).toFixed(2)}`));
 
                 videoElementCover.addEventListener("keydown", (ev) => {
                     if (ev.target !== videoElementCover)
@@ -146,10 +154,10 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
                     if (ev.ctrlKey) {
                         switch (ev.keyCode) {
                             case 188:
-                                pruVideo.subtitleDelay -= 100;
+                                pruVideo.textTrackDelay -= 100;
                                 return;
                             case 190:
-                                pruVideo.subtitleDelay += 100;
+                                pruVideo.textTrackDelay += 100;
                                 return;
                             default:
                                 return;

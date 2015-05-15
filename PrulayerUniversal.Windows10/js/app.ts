@@ -58,6 +58,9 @@ function loadSubtitle(result: any) {
     else
         blob = result;
 
+    while (mainVideoElement.firstChild)
+        mainVideoElement.removeChild(mainVideoElement.firstChild);
+    
     mainVideoElement.appendChild(DOMLiner.element("track", {
         kind: 'subtitles',
         src: URL.createObjectURL(blob, { oneTimeOnly: true }),

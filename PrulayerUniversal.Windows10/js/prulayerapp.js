@@ -1,4 +1,4 @@
-var StorageFile = Windows.Storage.StorageFile;
+﻿var StorageFile = Windows.Storage.StorageFile;
 var FileIO = Windows.Storage.FileIO;
 function fileLoad(files) {
     if (!files.length)
@@ -54,6 +54,8 @@ function loadSubtitle(result) {
         blob = new Blob([result], { type: "text/vtt" });
     else
         blob = result;
+    while (mainVideoElement.firstChild)
+        mainVideoElement.removeChild(mainVideoElement.firstChild);
     mainVideoElement.appendChild(DOMLiner.element("track", {
         kind: 'subtitles',
         src: URL.createObjectURL(blob, { oneTimeOnly: true }),
@@ -151,11 +153,11 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(function () {
         slider.addEventListener("userinput", function () { return mainVideo.currentTime = slider.valueAsNumber; });
         slider.addEventListener("pointerdown", function () { return mainVideo.pause(); });
         slider.addEventListener("keydown", function () { return mainVideo.pause(); });
-        var subtitleDelay = 0;
-        Object.defineProperty(pruVideo, "subtitleDelay", {
-            get: function () { return subtitleDelay; },
+        var textTrackDelay = 0;
+        Object.defineProperty(pruVideo, "textTrackDelay", {
+            get: function () { return textTrackDelay; },
             set: function (value) {
-                if (subtitleDelay === value || isNaN(value))
+                if (textTrackDelay === value || isNaN(value))
                     return;
                 for (var _i = 0, _a = Array.from(mainVideo.children); _i < _a.length; _i++) {
                     var child = _a[_i];
@@ -166,8 +168,8 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(function () {
                         mediator.delay(value);
                     }
                 }
-                subtitleDelay = value;
-                pruVideo.dispatchEvent(new CustomEvent("subtitledelayupdated")); // for display 
+                textTrackDelay = value;
+                pruVideo.dispatchEvent(new CustomEvent("texttrackdelayupdated")); // for display 
             }
         });
         pruVideo.appendChild(mainVideo);
@@ -208,17 +210,17 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(function () {
                 }, 3000);
             };
             mainVideo.addEventListener("seeked", function () { return displayText("Time: " + mainVideo.currentTime); });
-            pruVideo.addEventListener("subtitledelayupdated", function () { return displayText("Subtitle Delay: " + (pruVideo.subtitleDelay / 1000).toFixed(2)); });
+            pruVideo.addEventListener("texttrackdelayupdated", function () { return displayText("Text Track Delay: " + (pruVideo.textTrackDelay / 1000).toFixed(2)); });
             videoElementCover.addEventListener("keydown", function (ev) {
                 if (ev.target !== videoElementCover)
                     return;
                 if (ev.ctrlKey) {
                     switch (ev.keyCode) {
                         case 188:
-                            pruVideo.subtitleDelay -= 100;
+                            pruVideo.textTrackDelay -= 100;
                             return;
                         case 190:
-                            pruVideo.subtitleDelay += 100;
+                            pruVideo.textTrackDelay += 100;
                             return;
                         default:
                             return;
