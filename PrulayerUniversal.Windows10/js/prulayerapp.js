@@ -172,6 +172,9 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(function () {
                 pruVideo.dispatchEvent(new CustomEvent("texttrackdelayupdated")); // for display 
             }
         });
+        Object.defineProperty(pruVideo, "videoElement", {
+            get: function () { return mainVideo; }
+        });
         pruVideo.appendChild(mainVideo);
         pruVideo.appendChild(statusDisplay);
         pruVideo.appendChild(DOMLiner.access(DOMLiner.element("div", { class: "video-element-cover", style: "cursor: none" }, [

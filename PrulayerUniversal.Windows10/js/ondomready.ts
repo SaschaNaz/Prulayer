@@ -5,14 +5,7 @@ declare var mainVideoElement: HTMLVideoElement;
 
 interface PrulayerVideoElement extends HTMLElement {
     textTrackDelay: number;
-    tracks: TextTrackInformation[];
-}
-interface TextTrackInformation {
-    kind: string;
-    src: string;
-    default: boolean;
-    label: string;
-    srclang: string;
+    videoElement: HTMLVideoElement;
 }
 interface UserSliderElement extends HTMLInputElement {
     userEditMode: boolean;
@@ -100,6 +93,10 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
                 textTrackDelay = value;
                 pruVideo.dispatchEvent(new CustomEvent("texttrackdelayupdated")); // for display 
             }
+        });
+
+        Object.defineProperty(pruVideo, "videoElement", {
+            get: () => mainVideo
         });
 
         pruVideo.appendChild(mainVideo);
