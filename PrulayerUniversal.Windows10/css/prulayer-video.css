@@ -26,6 +26,8 @@
         position: relative;
         -ms-scroll-snap-points-y: snapList(0%, 100%, 70px);
         -ms-scroll-snap-type: mandatory;
+
+        touch-action: pan-y;
     }
 
     prulayer-video .video-controller {
