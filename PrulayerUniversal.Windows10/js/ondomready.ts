@@ -6,6 +6,7 @@ interface PrulayerVideoElement extends HTMLElement {
     textTrackDelay: number;
     videoElement: HTMLVideoElement;
     controlBar: HTMLDivElement;
+    currentTime: number;
 }
 interface UserSliderElement extends HTMLInputElement {
     userEditMode: boolean;
@@ -106,6 +107,18 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
             get: () => mainVideo
         });
 
+        // This promises that consequent time update requests will always be correctly applied
+        // regardless of video seeking speed.
+        let currentTime = 0;
+        Object.defineProperty(pruVideo, "currentTime", {
+            get: () => currentTime,
+            set: (value: number) => {
+                mainVideo.currentTime = currentTime = value;
+            }
+        });
+        mainVideo.addEventListener("timeupdate", () => currentTime = mainVideo.currentTime);
+
+
         pruVideo.appendChild(mainVideo);
         pruVideo.appendChild(statusDisplay);
         pruVideo.appendChild(
@@ -187,11 +200,11 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
                     switch (ev.key) {
                         case "Left":
                         case "ArrowLeft":
-                            mainVideo.currentTime -= 5;
+                            pruVideo.currentTime -= 5;
                             return;
                         case "Right":
                         case "ArrowRight":
-                            mainVideo.currentTime += 5;
+                            pruVideo.currentTime += 5;
                             return;
                         case " ":
                             ev.preventDefault();

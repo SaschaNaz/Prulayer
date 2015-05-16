@@ -208,6 +208,16 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(function () {
         Object.defineProperty(pruVideo, "videoElement", {
             get: function () { return mainVideo; }
         });
+        // This promises that consequent time update requests will always be correctly applied
+        // regardless of video seeking speed.
+        var currentTime = 0;
+        Object.defineProperty(pruVideo, "currentTime", {
+            get: function () { return currentTime; },
+            set: function (value) {
+                mainVideo.currentTime = currentTime = value;
+            }
+        });
+        mainVideo.addEventListener("timeupdate", function () { return currentTime = mainVideo.currentTime; });
         pruVideo.appendChild(mainVideo);
         pruVideo.appendChild(statusDisplay);
         pruVideo.appendChild(DOMLiner.access(DOMLiner.element("div", { class: "video-element-cover", style: "cursor: none" }, [
@@ -278,11 +288,11 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(function () {
                 switch (ev.key) {
                     case "Left":
                     case "ArrowLeft":
-                        mainVideo.currentTime -= 5;
+                        pruVideo.currentTime -= 5;
                         return;
                     case "Right":
                     case "ArrowRight":
-                        mainVideo.currentTime += 5;
+                        pruVideo.currentTime += 5;
                         return;
                     case " ":
                         ev.preventDefault();
