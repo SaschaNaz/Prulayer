@@ -46,17 +46,24 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
             mainVideo.classList.remove("hidden");
             <any>fileLoad(files);
         });
-    })
-
-    EventPromise.subscribeEvent<KeyboardEvent>(window, "keydown", (ev, contract) => {
-        if (ev.key !== "F11")
-            return;
+    });
+    
+    let toggleFullscreen = () => {
         let view = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
-        
+
         if ((<any>view).isFullScreen)
             (<any>view).exitFullScreenMode();
         else
             (<any>view).tryEnterFullScreenMode();
+    }
+
+    EventPromise.subscribeEvent<KeyboardEvent>(window, "keydown", (ev, contract) => {
+        if (ev.key !== "F11")
+            return;
+        toggleFullscreen();
+    });
+    EventPromise.subscribeEvent(mainVideo, "togglefullscreenrequested", (ev, contract) => {
+        toggleFullscreen();
     });
 
 
@@ -108,6 +115,9 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
                     }),
                     DOMLiner.access(DOMLiner.element("span", null, "Pause"), (element) => {
                         element.addEventListener("click", () => mainVideo.pause());
+                    }),
+                    DOMLiner.access(DOMLiner.element("span", null, "Fullscreen"), (element) => {
+                        element.addEventListener("click", () => pruVideo.dispatchEvent(new CustomEvent("togglefullscreenrequested")));
                     }),
                     slider
                 ])

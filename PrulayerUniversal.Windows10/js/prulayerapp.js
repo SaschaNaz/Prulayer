@@ -161,14 +161,20 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(function () {
             fileLoad(files);
         });
     });
-    EventPromise.subscribeEvent(window, "keydown", function (ev, contract) {
-        if (ev.key !== "F11")
-            return;
+    var toggleFullscreen = function () {
         var view = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
         if (view.isFullScreen)
             view.exitFullScreenMode();
         else
             view.tryEnterFullScreenMode();
+    };
+    EventPromise.subscribeEvent(window, "keydown", function (ev, contract) {
+        if (ev.key !== "F11")
+            return;
+        toggleFullscreen();
+    });
+    EventPromise.subscribeEvent(mainVideo, "togglefullscreenrequested", function (ev, contract) {
+        toggleFullscreen();
     });
     DOMTransform.register("prulayer-video", function (pruVideo) {
         var mainVideo = DOMLiner.element("video", { class: "main-video-element", id: "mainVideoElement" });
@@ -210,6 +216,9 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(function () {
                 }),
                 DOMLiner.access(DOMLiner.element("span", null, "Pause"), function (element) {
                     element.addEventListener("click", function () { return mainVideo.pause(); });
+                }),
+                DOMLiner.access(DOMLiner.element("span", null, "Fullscreen"), function (element) {
+                    element.addEventListener("click", function () { return pruVideo.dispatchEvent(new CustomEvent("togglefullscreenrequested")); });
                 }),
                 slider
             ])
