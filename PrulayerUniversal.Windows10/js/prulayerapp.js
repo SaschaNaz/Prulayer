@@ -55,7 +55,8 @@ function fileLoad(files) {
         });
     }
     sequence.then(function (track) {
-        insertTrack(track);
+        if (track)
+            insertTrack(track);
         mainVideo.videoElement.play();
     }).catch(function (error) {
         debugger;
@@ -210,18 +211,26 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(function () {
         pruVideo.appendChild(mainVideo);
         pruVideo.appendChild(statusDisplay);
         pruVideo.appendChild(DOMLiner.access(DOMLiner.element("div", { class: "video-element-cover", style: "cursor: none" }, [
-            DOMLiner.element("div", { class: "video-controller" }, [
+            DOMLiner.access(DOMLiner.element("div", { class: "video-controller" }, [
                 DOMLiner.access(DOMLiner.element("span", null, "Play"), function (element) {
-                    element.addEventListener("click", function () { return mainVideo.play(); });
-                }),
-                DOMLiner.access(DOMLiner.element("span", null, "Pause"), function (element) {
-                    element.addEventListener("click", function () { return mainVideo.pause(); });
+                    element.addEventListener("click", function () {
+                        if (mainVideo.paused)
+                            mainVideo.play();
+                        else
+                            mainVideo.pause();
+                        mainVideo.addEventListener("play", function () { return element.textContent = "Pause"; });
+                        mainVideo.addEventListener("pause", function () { return element.textContent = "Play"; });
+                    });
                 }),
                 DOMLiner.access(DOMLiner.element("span", null, "Fullscreen"), function (element) {
                     element.addEventListener("click", function () { return pruVideo.dispatchEvent(new CustomEvent("togglefullscreenrequested")); });
                 }),
                 slider
-            ])
+            ]), function (controlBar) {
+                Object.defineProperty(pruVideo, "controlBar", {
+                    get: function () { return controlBar; }
+                });
+            })
         ]), function (videoElementCover) {
             // physical distance
             var isClick = function (moveX) { return (Math.abs(moveX) / screen.deviceXDPI < 0.04); };
@@ -350,6 +359,11 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(function () {
         var pruVideo = _a[_i];
         DOMTransform.transform(pruVideo);
     }
+    mainVideo.controlBar.appendChild(DOMLiner.access(DOMLiner.element("span", null, "Open"), function (element) {
+        element.addEventListener("click", function () {
+            startOpenButton.click();
+        });
+    }));
 });
 /*
     <video class="main-video-element" id="mainVideoElement"></video>

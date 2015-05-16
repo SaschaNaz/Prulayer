@@ -57,7 +57,8 @@ function fileLoad(files: Windows.Foundation.Collections.IVectorView<StorageFile>
     }
 
     sequence.then((track) => {
-        insertTrack(track);
+        if (track)
+            insertTrack(track);
         mainVideo.videoElement.play();
     }).catch((error) => {
         debugger;

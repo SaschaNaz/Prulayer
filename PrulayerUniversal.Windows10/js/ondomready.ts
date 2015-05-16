@@ -5,6 +5,7 @@ declare var mainVideo: PrulayerVideoElement;
 interface PrulayerVideoElement extends HTMLElement {
     textTrackDelay: number;
     videoElement: HTMLVideoElement;
+    controlBar: HTMLDivElement;
 }
 interface UserSliderElement extends HTMLInputElement {
     userEditMode: boolean;
@@ -109,19 +110,29 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
         pruVideo.appendChild(statusDisplay);
         pruVideo.appendChild(
             DOMLiner.access(DOMLiner.element("div", { class: "video-element-cover", style: "cursor: none" }, [
-                DOMLiner.element("div", { class: "video-controller" }, [
+                DOMLiner.access(DOMLiner.element("div", { class: "video-controller" }, [
                     DOMLiner.access(DOMLiner.element("span", null, "Play"), (element) => {
-                        element.addEventListener("click", () => mainVideo.play());
-                    }),
-                    DOMLiner.access(DOMLiner.element("span", null, "Pause"), (element) => {
-                        element.addEventListener("click", () => mainVideo.pause());
+                        element.addEventListener("click", () => {
+                            if (mainVideo.paused)
+                                mainVideo.play();
+                            else
+                                mainVideo.pause();
+
+                            mainVideo.addEventListener("play", () => element.textContent = "Pause");
+                            mainVideo.addEventListener("pause", () => element.textContent = "Play");
+                        });
                     }),
                     DOMLiner.access(DOMLiner.element("span", null, "Fullscreen"), (element) => {
                         element.addEventListener("click", () => pruVideo.dispatchEvent(new CustomEvent("togglefullscreenrequested")));
                     }),
                     slider
-                ])
+                ]), (controlBar) => {
+                    Object.defineProperty(pruVideo, "controlBar", {
+                        get: () => controlBar
+                    });
+                })
             ]), (videoElementCover: HTMLDivElement) => {
+
                 // physical distance
                 let isClick = (moveX: number) => (Math.abs(moveX) / screen.deviceXDPI < 0.04);
                 // mouse cursor timer id
@@ -270,6 +281,13 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
     // <prulayer-video> element construction
     for (let pruVideo of Array.from(document.getElementsByTagName("prulayer-video")))
         DOMTransform.transform(pruVideo);
+
+
+    mainVideo.controlBar.appendChild(DOMLiner.access(DOMLiner.element("span", null, "Open"), (element) => {
+        element.addEventListener("click", () => {
+            startOpenButton.click();
+        });
+    }));
 });
 
 
