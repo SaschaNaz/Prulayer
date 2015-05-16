@@ -1,7 +1,6 @@
 ﻿declare var emptyStart: HTMLDivElement;
 declare var startOpenButton: HTMLInputElement;
-declare var mainVideo: HTMLDivElement;
-declare var mainVideoElement: HTMLVideoElement;
+declare var mainVideo: PrulayerVideoElement;
 
 interface PrulayerVideoElement extends HTMLElement {
     textTrackDelay: number;
@@ -86,7 +85,7 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
                         if (!mediator)
                             return;
 
-                        mediator.delay(value);
+                        mediator.delay(value - textTrackDelay);
                     }
                 }
 

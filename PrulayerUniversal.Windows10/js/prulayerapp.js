@@ -27,41 +27,67 @@ function fileLoad(files) {
     }
     if (videofile) {
         //if (samiDocument) samiDocument = null;
-        mainVideoElement.src = URL.createObjectURL(videofile, { oneTimeOnly: true });
+        mainVideo.videoElement.src = URL.createObjectURL(videofile, { oneTimeOnly: true });
     }
+    var sequence = Promise.resolve();
     if (subfile) {
-        loadSubtitle(subfile);
-        mainVideoElement.play();
+        sequence = sequence.then(function () { return createTrackElement(subfile); });
     }
     else if (samifile) {
-        Promise.resolve(FileIO.readTextAsync(samifile))
-            .then(function (samistr) { return SamiTS.createWebVTT(samistr); })
+        var samiDocument;
+        sequence = Promise.resolve(FileIO.readTextAsync(samifile))
+            .then(function (samistr) { return SamiTS.createSAMIDocument(samistr); })
+            .then(function (samidoc) {
+            samiDocument = samidoc;
+            return SamiTS.createWebVTT(samidoc);
+        })
             .then(function (result) {
-            loadSubtitle(result.subtitle);
-            mainVideoElement.play();
-        }).catch(function (error) {
-            debugger;
+            var track = createTrackElement(result.subtitle);
+            track.mediator = {
+                delay: function (milliseconds) {
+                    samiDocument.delay(milliseconds);
+                    SamiTS.createWebVTT(samiDocument).then(function (result) {
+                        return track.src = generateObjectURLFromTextTrackData(result.subtitle);
+                    });
+                }
+            };
+            return track;
         });
     }
+    sequence.then(function (track) {
+        insertTrack(track);
+        mainVideo.videoElement.play();
+    }).catch(function (error) {
+        debugger;
+    });
+}
+function insertTrack(track) {
+    while (mainVideo.videoElement.firstChild)
+        mainVideo.videoElement.removeChild(mainVideo.videoElement.firstChild);
+    mainVideo.videoElement.appendChild(track);
 }
 function getFileExtension(file) {
     var splitted = file.name.split('.');
     return splitted[splitted.length - 1].toLowerCase();
 }
-function loadSubtitle(result) {
-    var blob;
-    if (typeof result === "string")
-        blob = new Blob([result], { type: "text/vtt" });
-    else
-        blob = result;
-    while (mainVideoElement.firstChild)
-        mainVideoElement.removeChild(mainVideoElement.firstChild);
-    mainVideoElement.appendChild(DOMLiner.element("track", {
+function createTrackElement(result) {
+    var objectURL = generateObjectURLFromTextTrackData(result);
+    return DOMLiner.element("track", {
         kind: 'subtitles',
-        src: URL.createObjectURL(blob, { oneTimeOnly: true }),
-        default: true,
-        "prop-mediator": { delay: function (milliseconds) { } }
-    }));
+        src: objectURL,
+        default: true
+    });
+}
+function generateObjectURLFromTextTrackData(data) {
+    var blob;
+    if (typeof data === "string")
+        blob = getBlobFromText(data);
+    else
+        blob = data;
+    return URL.createObjectURL(blob, { oneTimeOnly: true });
+}
+function getBlobFromText(text) {
+    return new Blob([text], { type: "text/vtt" });
 }
 var DOMTransform;
 (function (DOMTransform) {
@@ -165,7 +191,7 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(function () {
                         var mediator = child.mediator;
                         if (!mediator)
                             return;
-                        mediator.delay(value);
+                        mediator.delay(value - textTrackDelay);
                     }
                 }
                 textTrackDelay = value;

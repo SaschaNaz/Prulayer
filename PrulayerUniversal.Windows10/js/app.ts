@@ -26,46 +26,75 @@ function fileLoad(files: Windows.Foundation.Collections.IVectorView<StorageFile>
     
     if (videofile) {
         //if (samiDocument) samiDocument = null;
-        mainVideoElement.src = URL.createObjectURL(videofile, { oneTimeOnly: true });
+        mainVideo.videoElement.src = URL.createObjectURL(videofile, { oneTimeOnly: true });
     }
+
+    let sequence = Promise.resolve<HTMLTrackElementWithMediator>();
     if (subfile) {
-        loadSubtitle(subfile);
-        mainVideoElement.play();
+        sequence = sequence.then(() => createTrackElement(subfile));
     }
     else if (samifile) {
-        Promise.resolve(FileIO.readTextAsync(samifile))
-            .then((samistr) => SamiTS.createWebVTT(samistr))
+        let samiDocument: SamiTS.SAMIDocument;
+        
+        sequence = Promise.resolve(FileIO.readTextAsync(samifile))
+            .then((samistr) => SamiTS.createSAMIDocument(samistr))
+            .then((samidoc) => {
+                samiDocument = samidoc;
+                return SamiTS.createWebVTT(samidoc);
+            })
             .then((result) => {
-                loadSubtitle(result.subtitle);
+                let track = <HTMLTrackElementWithMediator>createTrackElement(result.subtitle);
 
-                mainVideoElement.play();
-            }).catch((error) => {
-                debugger;
+                track.mediator = {
+                    delay(milliseconds) {
+                        samiDocument.delay(milliseconds);
+                        SamiTS.createWebVTT(samiDocument).then((result) =>
+                            track.src = generateObjectURLFromTextTrackData(result.subtitle));
+                    }
+                };
+                return track;
             });
     }
+
+    sequence.then((track) => {
+        insertTrack(track);
+        mainVideo.videoElement.play();
+    }).catch((error) => {
+        debugger;
+    });
 }
+
+function insertTrack(track: HTMLTrackElementWithMediator) {
+    while (mainVideo.videoElement.firstChild)
+        mainVideo.videoElement.removeChild(mainVideo.videoElement.firstChild);
+    mainVideo.videoElement.appendChild(track);
+}
+
+
 function getFileExtension(file: StorageFile) {
     let splitted = file.name.split('.');
     return splitted[splitted.length - 1].toLowerCase();
 } 
 
-function loadSubtitle(result: string): void;
-function loadSubtitle(result: StorageFile): void;
-function loadSubtitle(result: any) {
-    var blob: Blob;
-    if (typeof result === "string")
-        blob = new Blob([result], { type: "text/vtt" });
-    else
-        blob = result;
-
-    while (mainVideoElement.firstChild)
-        mainVideoElement.removeChild(mainVideoElement.firstChild);
+function createTrackElement(result: string|StorageFile) {
+    let objectURL = generateObjectURLFromTextTrackData(result);
     
-    mainVideoElement.appendChild(DOMLiner.element("track", {
+    return DOMLiner.element("track", {
         kind: 'subtitles',
-        src: URL.createObjectURL(blob, { oneTimeOnly: true }),
-        default: true,
+        src: objectURL,
+        default: true
+    });
+}
 
-        "prop-mediator": { delay(milliseconds: number) { } }
-    }));
+function generateObjectURLFromTextTrackData(data: string|StorageFile) {
+    var blob: Blob;
+    if (typeof data === "string")
+        blob = getBlobFromText(data);
+    else
+        blob = <any>data;
+    return URL.createObjectURL(blob, { oneTimeOnly: true });
+}
+
+function getBlobFromText(text: string) {
+    return new Blob([text], { type: "text/vtt" });
 }
