@@ -275,6 +275,13 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(function () {
                     case "ArrowRight":
                         mainVideo.currentTime += 5;
                         return;
+                    case " ":
+                        ev.preventDefault();
+                        if (mainVideo.paused)
+                            mainVideo.play();
+                        else
+                            mainVideo.pause();
+                        return;
                     default:
                         return;
                 }

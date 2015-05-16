@@ -159,10 +159,10 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
 
                     if (ev.ctrlKey) {
                         switch (ev.keyCode) {
-                            case 188:
+                            case 188: /* , */
                                 pruVideo.textTrackDelay -= 100;
                                 return;
-                            case 190:
+                            case 190: /* . */
                                 pruVideo.textTrackDelay += 100;
                                 return;
                             default:
@@ -181,6 +181,13 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
                         case "Right":
                         case "ArrowRight":
                             mainVideo.currentTime += 5;
+                            return;
+                        case " ":
+                            ev.preventDefault();
+                            if (mainVideo.paused)
+                                mainVideo.play();
+                            else
+                                mainVideo.pause();
                             return;
                         default:
                             return;
