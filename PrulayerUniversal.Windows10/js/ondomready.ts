@@ -13,6 +13,7 @@ interface UserSliderElement extends HTMLInputElement {
 }
 interface HTMLTrackElementWithMediator extends HTMLTrackElement {
     mediator: TextTrackMediator;
+    timedelay: number;
 }
 interface TextTrackMediator {
     delay(milliseconds: number): void;
@@ -102,10 +103,25 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
                 pruVideo.dispatchEvent(new CustomEvent("texttrackdelayupdated")); // for display 
             }
         });
+        let trackObserver = new MutationObserver((mutations) => {
+            if (textTrackDelay === 0)
+                return;
+
+            for (let mutation of mutations) {
+                for (let addedNode of Array.from(mutation.addedNodes)) {
+                    if (addedNode instanceof HTMLTrackElement
+                        && (<HTMLTrackElementWithMediator>addedNode).timedelay !== textTrackDelay) {
+                        (<HTMLTrackElementWithMediator>addedNode).mediator.delay(textTrackDelay);
+                    }
+                }
+            }
+        });
+        trackObserver.observe(mainVideo, { childList: true });
 
         Object.defineProperty(pruVideo, "videoElement", {
             get: () => mainVideo
         });
+
 
         // This promises that consequent time update requests will always be correctly applied
         // regardless of video seeking speed.

@@ -49,8 +49,10 @@ function fileLoad(files: Windows.Foundation.Collections.IVectorView<StorageFile>
                     delay(milliseconds) {
                         let newDocument = samiDocument.clone();
                         newDocument.delay(milliseconds);
-                        SamiTS.createWebVTT(newDocument).then((result) =>
-                            track.src = generateObjectURLFromTextTrackData(result.subtitle));
+                        SamiTS.createWebVTT(newDocument).then((result) => {
+                            track.src = generateObjectURLFromTextTrackData(result.subtitle);
+                            track.timedelay = milliseconds;
+                        });
                     }
                 };
                 return track;

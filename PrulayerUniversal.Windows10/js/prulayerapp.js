@@ -48,7 +48,8 @@ function fileLoad(files) {
                     var newDocument = samiDocument.clone();
                     newDocument.delay(milliseconds);
                     SamiTS.createWebVTT(newDocument).then(function (result) {
-                        return track.src = generateObjectURLFromTextTrackData(result.subtitle);
+                        track.src = generateObjectURLFromTextTrackData(result.subtitle);
+                        track.timedelay = milliseconds;
                     });
                 }
             };
@@ -206,6 +207,21 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(function () {
                 pruVideo.dispatchEvent(new CustomEvent("texttrackdelayupdated")); // for display 
             }
         });
+        var trackObserver = new MutationObserver(function (mutations) {
+            if (textTrackDelay === 0)
+                return;
+            for (var _i = 0; _i < mutations.length; _i++) {
+                var mutation = mutations[_i];
+                for (var _a = 0, _b = Array.from(mutation.addedNodes); _a < _b.length; _a++) {
+                    var addedNode = _b[_a];
+                    if (addedNode instanceof HTMLTrackElement
+                        && addedNode.timedelay !== textTrackDelay) {
+                        addedNode.mediator.delay(textTrackDelay);
+                    }
+                }
+            }
+        });
+        trackObserver.observe(mainVideo, { childList: true });
         Object.defineProperty(pruVideo, "videoElement", {
             get: function () { return mainVideo; }
         });
