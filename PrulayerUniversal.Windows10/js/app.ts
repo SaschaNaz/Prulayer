@@ -47,8 +47,9 @@ function fileLoad(files: Windows.Foundation.Collections.IVectorView<StorageFile>
 
                 track.mediator = {
                     delay(milliseconds) {
-                        samiDocument.delay(milliseconds);
-                        SamiTS.createWebVTT(samiDocument).then((result) =>
+                        let newDocument = samiDocument.clone();
+                        newDocument.delay(milliseconds);
+                        SamiTS.createWebVTT(newDocument).then((result) =>
                             track.src = generateObjectURLFromTextTrackData(result.subtitle));
                     }
                 };

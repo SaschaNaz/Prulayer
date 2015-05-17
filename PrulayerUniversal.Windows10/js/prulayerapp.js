@@ -45,8 +45,9 @@ function fileLoad(files) {
             var track = createTrackElement(result.subtitle);
             track.mediator = {
                 delay: function (milliseconds) {
-                    samiDocument.delay(milliseconds);
-                    SamiTS.createWebVTT(samiDocument).then(function (result) {
+                    var newDocument = samiDocument.clone();
+                    newDocument.delay(milliseconds);
+                    SamiTS.createWebVTT(newDocument).then(function (result) {
                         return track.src = generateObjectURLFromTextTrackData(result.subtitle);
                     });
                 }
@@ -198,7 +199,7 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(function () {
                         var mediator = child.mediator;
                         if (!mediator)
                             return;
-                        mediator.delay(value - textTrackDelay);
+                        mediator.delay(value);
                     }
                 }
                 textTrackDelay = value;

@@ -94,7 +94,7 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
                         if (!mediator)
                             return;
 
-                        mediator.delay(value - textTrackDelay);
+                        mediator.delay(value);
                     }
                 }
 
