@@ -138,7 +138,7 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
         pruVideo.appendChild(mainVideo);
         pruVideo.appendChild(statusDisplay);
         pruVideo.appendChild(
-            DOMLiner.access(DOMLiner.element("div", { class: "video-element-cover", style: "cursor: none" }, [
+            DOMLiner.access(DOMLiner.element("div", { class: "video-element-cover", style: "cursor: none", tabindex: 0 }, [
                 DOMLiner.access(DOMLiner.element("div", { class: "video-controller" }, [
                     DOMLiner.access(DOMLiner.element("span", null, "Play"), (element) => {
                         element.addEventListener("click", () => {
