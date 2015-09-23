@@ -1,4 +1,4 @@
-﻿var StorageFile = Windows.Storage.StorageFile;
+var StorageFile = Windows.Storage.StorageFile;
 var FileIO = Windows.Storage.FileIO;
 function fileLoad(files) {
     if (!files.length)
