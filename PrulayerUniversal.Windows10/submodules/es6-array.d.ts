@@ -19,8 +19,3 @@
       */
     of<T>(...items: T[]): Array<T>;
 }
-
-interface ArrayLike<T> {
-    length: number;
-    [n: number]: T;
-}

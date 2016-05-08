@@ -37,7 +37,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>8f6035b4-b3bd-4762-be8a-5f923e56318e</ProjectGuid>
-    <TypeScriptToolsVersion>1.6</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>1.9</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <TypeScriptNoImplicitAny>true</TypeScriptNoImplicitAny>
@@ -71,10 +71,11 @@
     <TypeScriptCompile Include="js\app.ts" />
     <Content Include="js\default.js" />
     <Content Include="css\default.css" />
+    <Content Include="js\prulayerapp.js" />
     <Content Include="submodules\domliner\domliner.js" />
     <Content Include="submodules\eventpromise\eventpromise.js" />
     <Content Include="submodules\gridlayout\bin\css-polyfills.min.js" />
-    <Content Include="submodules\samits\sami.js" />
+    <Content Include="submodules\samits\lib\sami.js" />
     <Content Include="submodules\subclassj\subclassj.js" />
     <Content Include="WinJS\css\ui-dark.css" />
     <Content Include="WinJS\css\ui-light.css" />
@@ -90,7 +91,7 @@
     <TypeScriptCompile Include="submodules\es6-array.d.ts" />
     <TypeScriptCompile Include="submodules\es6-promise.d.ts" />
     <TypeScriptCompile Include="submodules\eventpromise\eventpromise.d.ts" />
-    <TypeScriptCompile Include="submodules\samits\sami.d.ts" />
+    <TypeScriptCompile Include="submodules\samits\lib\sami.d.ts" />
     <TypeScriptCompile Include="submodules\subclassj\subclassj.d.ts" />
     <TypeScriptCompile Include="submodules\winjs-2.0.d.ts" />
     <TypeScriptCompile Include="submodules\winrt.d.ts" />
