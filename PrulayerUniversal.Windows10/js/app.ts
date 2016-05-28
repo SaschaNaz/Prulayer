@@ -1,7 +1,7 @@
 ﻿import StorageFile = Windows.Storage.StorageFile;
 import FileIO = Windows.Storage.FileIO;
 
-function fileLoad(files: Windows.Foundation.Collections.IVectorView<StorageFile>) {
+async function fileLoad(files: Windows.Foundation.Collections.IVectorView<StorageFile>) {
     if (!files.length)
         return;
 
@@ -23,54 +23,44 @@ function fileLoad(files: Windows.Foundation.Collections.IVectorView<StorageFile>
         if (videofile && (subfile || samifile))
             break;
     }
-    
+
     if (videofile) {
         //if (samiDocument) samiDocument = null;
         mainVideo.videoElement.src = URL.createObjectURL(videofile, { oneTimeOnly: true });
     }
 
-    let sequence = Promise.resolve<HTMLTrackElementWithMediator>();
+    let track: HTMLTrackElementWithMediator;
     if (subfile) {
-        sequence = sequence.then(() => createTrackElement(subfile));
+        track = createTrackElement(subfile);
     }
     else if (samifile) {
-        let samiDocument: SamiTS.SAMIDocument;
-        
-        sequence = Promise.resolve(FileIO.readTextAsync(samifile))
-            .then((samistr) => SamiTS.createSAMIDocument(samistr))
-            .then((samidoc) => {
-                samiDocument = samidoc;
-                return SamiTS.createWebVTT(samidoc);
-            })
-            .then((result) => {
-                let track = <HTMLTrackElementWithMediator>createTrackElement(result.subtitle);
+        const samistr = await FileIO.readTextAsync(samifile);
+        const samidoc = await SamiTS.createSAMIDocument(samistr);
+        const result = await SamiTS.createWebVTT(samidoc);
 
-                track.mediator = {
-                    delay(milliseconds) {
-                        let newDocument = samiDocument.clone();
-                        newDocument.delay(milliseconds);
-                        SamiTS.createWebVTT(newDocument).then((result) => {
-                            track.src = generateObjectURLFromTextTrackData(result.subtitle);
-                            track.timedelay = milliseconds;
-                        });
-                    }
-                };
-                return track;
-            });
+        const trackWithMediator = createTrackElement(result.subtitle) as HTMLTrackElementWithMediator;
+        trackWithMediator.mediator = {
+            async delay(milliseconds) {
+                const newDocument = samidoc.clone();
+                newDocument.delay(milliseconds);
+                const result = await SamiTS.createWebVTT(newDocument);
+                trackWithMediator.src = generateObjectURLFromTextTrackData(result.subtitle);
+                trackWithMediator.timedelay = milliseconds;
+            }
+        };
+        track = trackWithMediator;
     }
 
-    sequence.then((track) => {
-        if (track)
-            insertTrack(track);
-        mainVideo.videoElement.play();
-    }).catch((error) => {
-        debugger;
-    });
+    if (track) {
+        insertTrack(track);
+    }
+    mainVideo.videoElement.play();
 }
 
 function insertTrack(track: HTMLTrackElementWithMediator) {
-    while (mainVideo.videoElement.firstChild)
+    while (mainVideo.videoElement.firstChild) {
         mainVideo.videoElement.removeChild(mainVideo.videoElement.firstChild);
+    }
     mainVideo.videoElement.appendChild(track);
 }
 
@@ -78,24 +68,26 @@ function insertTrack(track: HTMLTrackElementWithMediator) {
 function getFileExtension(file: StorageFile) {
     let splitted = file.name.split('.');
     return splitted[splitted.length - 1].toLowerCase();
-} 
+}
 
-function createTrackElement(result: string|StorageFile) {
-    let objectURL = generateObjectURLFromTextTrackData(result);
-    
-    return DOMLiner.element("track", {
+function createTrackElement(result: string | StorageFile) {
+    const objectURL = generateObjectURLFromTextTrackData(result);
+
+    return DOMLiner.element<HTMLTrackElement>("track", {
         kind: 'subtitles',
         src: objectURL,
         default: true
     });
 }
 
-function generateObjectURLFromTextTrackData(data: string|StorageFile) {
+function generateObjectURLFromTextTrackData(data: string | StorageFile) {
     var blob: Blob;
-    if (typeof data === "string")
+    if (typeof data === "string") {
         blob = getBlobFromText(data);
-    else
+    }
+    else {
         blob = <any>data;
+    }
     return URL.createObjectURL(blob, { oneTimeOnly: true });
 }
 

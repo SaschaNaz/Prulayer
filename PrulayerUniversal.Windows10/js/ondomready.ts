@@ -12,8 +12,8 @@ interface UserSliderElement extends HTMLInputElement {
     userEditMode: boolean;
 }
 interface HTMLTrackElementWithMediator extends HTMLTrackElement {
-    mediator: TextTrackMediator;
-    timedelay: number;
+    mediator?: TextTrackMediator;
+    timedelay?: number;
 }
 interface TextTrackMediator {
     delay(milliseconds: number): void;

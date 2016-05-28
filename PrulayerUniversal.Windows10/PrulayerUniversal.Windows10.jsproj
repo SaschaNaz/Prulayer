@@ -43,6 +43,7 @@
     <TypeScriptNoImplicitAny>true</TypeScriptNoImplicitAny>
     <TypeScriptOutFile>js/prulayerapp.js</TypeScriptOutFile>
     <TypeScriptModuleKind>none</TypeScriptModuleKind>
+    <TypeScriptTarget>ES6</TypeScriptTarget>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup Condition="'$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0'">
@@ -52,8 +53,8 @@
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\$(WMSJSProjectDirectory)\Microsoft.VisualStudio.$(WMSJSProject).props" />
   <PropertyGroup>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion>10.0.10240.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.10240.0</TargetPlatformMinVersion>
+    <TargetPlatformVersion>10.0.10586.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.10586.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>$(VersionNumberMajor).$(VersionNumberMinor)</MinimumVisualStudioVersion>
     <DefaultLanguage>en-US</DefaultLanguage>
     <PackageCertificateKeyFile>PrulayerUniversal.Windows10_TemporaryKey.pfx</PackageCertificateKeyFile>
@@ -88,8 +89,6 @@
     <TypeScriptCompile Include="js\domtransform.ts" />
     <TypeScriptCompile Include="js\ondomready.ts" />
     <TypeScriptCompile Include="submodules\domliner\domliner.d.ts" />
-    <TypeScriptCompile Include="submodules\es6-array.d.ts" />
-    <TypeScriptCompile Include="submodules\es6-promise.d.ts" />
     <TypeScriptCompile Include="submodules\eventpromise\eventpromise.d.ts" />
     <TypeScriptCompile Include="submodules\samits\lib\sami.d.ts" />
     <TypeScriptCompile Include="submodules\subclassj\subclassj.d.ts" />
