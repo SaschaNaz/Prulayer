@@ -1,5 +1,6 @@
 ﻿declare var emptyStart: HTMLDivElement;
 declare var startOpenButton: HTMLInputElement;
+declare var openNetworkInput: HTMLInputElement;
 declare var mainVideo: PrulayerVideoElement;
 
 interface PrulayerVideoElement extends HTMLElement {
@@ -47,8 +48,29 @@ EventPromise.waitEvent(window, "DOMContentLoaded").then(() => {
                 return;
             emptyStart.classList.add("hidden");
             mainVideo.classList.remove("hidden");
-            <any>fileLoad(files);
+            fileLoad(files);
         });
+    });
+
+    EventPromise.subscribeEvent(openNetworkInput, "keydown", (ev: KeyboardEvent) => {
+        if (ev.key === "Enter") {
+            emptyStart.classList.add("hidden");
+            mainVideo.classList.remove("hidden");
+            urlLoad(openNetworkInput.value);
+        }
+    });
+
+    EventPromise.subscribeEvent(window, "keydown", (ev: KeyboardEvent) => {
+        if ((ev.key === "Del" /* Edge 14 bug */ || ev.key === "Delete") && ev.shiftKey) {
+            if (emptyStart.classList.contains("hidden")) {
+                emptyStart.classList.remove("hidden");
+                mainVideo.classList.add("hidden");
+            }
+            else {
+                emptyStart.classList.add("hidden");
+                mainVideo.classList.remove("hidden");
+            }
+        }
     });
     
     let toggleFullscreen = () => {

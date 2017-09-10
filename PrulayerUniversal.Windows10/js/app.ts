@@ -55,6 +55,13 @@ async function fileLoad(files: Windows.Foundation.Collections.IVectorView<Storag
         insertTrack(track);
     }
     mainVideo.videoElement.play();
+    mainVideo.focus();
+}
+
+function urlLoad(url: string) {
+    mainVideo.videoElement.src = url;
+    mainVideo.videoElement.play();
+    mainVideo.focus();
 }
 
 function insertTrack(track: HTMLTrackElementWithMediator) {
