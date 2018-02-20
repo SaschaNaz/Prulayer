@@ -80,7 +80,7 @@
     <Content Include="submodules\eventpromise\eventpromise.js" />
     <Content Include="submodules\gridlayout\bin\css-polyfills.min.js" />
     <Content Include="submodules\samits\lib\sami.js" />
-    <Content Include="submodules\subclassj\subclassj.js" />
+    <Content Include="submodules\sn-cancelable\lib\global\cancelable.js" />
     <Content Include="WinJS\css\ui-dark.css" />
     <Content Include="WinJS\css\ui-light.css" />
     <Content Include="WinJS\fonts\Symbols.ttf" />
@@ -94,7 +94,7 @@
     <TypeScriptCompile Include="submodules\domliner\domliner.d.ts" />
     <TypeScriptCompile Include="submodules\eventpromise\eventpromise.d.ts" />
     <TypeScriptCompile Include="submodules\samits\lib\sami.d.ts" />
-    <TypeScriptCompile Include="submodules\subclassj\subclassj.d.ts" />
+    <TypeScriptCompile Include="submodules\sn-cancelable\lib\global\cancelable.d.ts" />
     <TypeScriptCompile Include="submodules\winjs-2.0.d.ts" />
   </ItemGroup>
   <ItemGroup>
