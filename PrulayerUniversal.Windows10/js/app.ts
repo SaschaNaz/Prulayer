@@ -36,14 +36,14 @@ async function fileLoad(files: Windows.Foundation.Collections.IVectorView<Storag
     else if (samifile) {
         const samistr = await FileIO.readTextAsync(samifile);
         const samidoc = await SamiTS.createSAMIDocument(samistr);
-        const result = await SamiTS.createWebVTT(samidoc);
+        const result = await SamiTS.createWebVTT(samidoc, { legacyForceArrow: true });
 
         const trackWithMediator = createTrackElement(result.subtitle) as HTMLTrackElementWithMediator;
         trackWithMediator.mediator = {
             async delay(milliseconds) {
                 const newDocument = samidoc.clone();
                 newDocument.delay(milliseconds);
-                const result = await SamiTS.createWebVTT(newDocument);
+                const result = await SamiTS.createWebVTT(newDocument, { legacyForceArrow: true });
                 trackWithMediator.src = generateObjectURLFromTextTrackData(result.subtitle);
                 trackWithMediator.timedelay = milliseconds;
             }
